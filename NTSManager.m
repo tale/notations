@@ -62,6 +62,11 @@
             self.notes = [[NSMutableArray alloc] init];
         }
     }
+
+    for (NTSNote *note in self.notes) {
+
+        note.presented = NO;
+    }
 }
 
 - (void)updateNotes {

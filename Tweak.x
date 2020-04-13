@@ -17,10 +17,32 @@ BOOL visible;
     UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(createNote:)];
     [self.view addGestureRecognizer:pressRecognizer];
 
+    UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes:)];
+    tapRecognizer.numberOfTapsRequired = 2;
+
+    [self.view addGestureRecognizer:tapRecognizer];
+
+
     [[NTSManager sharedInstance] initView];
     [self.view addSubview:[NTSManager sharedInstance].view];
     [[NTSManager sharedInstance] loadNotes];
+    [[NTSManager sharedInstance] updateNotes];
+}
 
+%new
+- (void)showNotes:(UITapGestureRecognizer *)sender {
+
+    if (visible == NO) {
+
+        [NTSManager sharedInstance].view.hidden = NO;
+        visible = YES;
+    }
+
+    else {
+
+        [NTSManager sharedInstance].view.hidden = YES;
+        visible = NO;
+    }
 }
 
 %new
