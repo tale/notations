@@ -24,7 +24,7 @@
 
 - (void)initView {
 
-    self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] applicationFrame].size.width, [[UIScreen mainScreen] applicationFrame].size.height + 50)];
+    self.view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height + 50)];
     self.view.hidden = YES;
     [self.view setBackgroundColor:[UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.4]];
     [self.view setUserInteractionEnabled:YES];
@@ -71,6 +71,7 @@
         [note setupView];
         [note.view removeFromSuperview];
         [self.view addSubview:note.view];
+        note.presented = YES;
     }
 }
 
