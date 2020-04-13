@@ -1,20 +1,5 @@
 #import "NTSNote.h"
 
-#import <CoreImage/CoreImage.h>
-
-@implementation UIImage (ColorInverse)
-
-+ (UIImage *)inverseColor:(UIImage *)image {
-
-    CIImage *coreImage = [CIImage imageWithCGImage:image.CGImage];
-    CIFilter *filter = [CIFilter filterWithName:@"CIColorInvert"];
-    [filter setValue:coreImage forKey:kCIInputImageKey];
-    CIImage *result = [filter valueForKey:kCIOutputImageKey];
-    return [UIImage imageWithCIImage:result];
-}
-
-@end
-
 @implementation NTSNote
 
 UIImage *lockedGlyph;
@@ -35,6 +20,7 @@ UIButton *deleteButton;
 
     [encoder encodeBool:self.draggable forKey:@"draggable"];
     [encoder encodeBool:self.resizeable forKey:@"resizeable"];
+    [encoder encodeBool:self.presented forKey:@"presented"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
@@ -50,6 +36,7 @@ UIButton *deleteButton;
 
         self.draggable = [decoder decodeBoolForKey:@"draggable"];
         self.resizeable = [decoder decodeBoolForKey:@"resizeable"];
+        self.presented = [decoder decodeBoolForKey:@"presented"];
     }
 
     return self;
@@ -57,69 +44,83 @@ UIButton *deleteButton;
 
 - (void)setupView {
 
-    UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)];
-    UIPanGestureRecognizer *dragGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(dragView:)];
+    if (self.presented == NO) {
 
-    self.view = [[UIView alloc] initWithFrame:CGRectMake(self.x, self.y, self.width, self.height)];
-    self.view.layer.cornerRadius = 20.0;
+        UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)];
+        UIPanGestureRecognizer *dragGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(dragView:)];
 
-    UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-    UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        self.view = [[UIView alloc] initWithFrame:CGRectMake(self.x, self.y, self.width, self.height)];
+        self.view.layer.cornerRadius = 20.0;
 
-    blurEffectView.layer.cornerRadius = 20;
-    blurEffectView.frame = self.view.bounds;
-    blurEffectView.layer.masksToBounds = YES;
-    blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        UIBlurEffect *blurEffect;
+        if (SYSTEM_VERSION(@"13.0")) {
 
-    [self.view setBackgroundColor:[UIColor clearColor]];
-    [self.view addSubview:blurEffectView];
-    [self.view addGestureRecognizer:tapRecognizer];
-    [self.view addGestureRecognizer:dragGesture];    
-    [self.view setUserInteractionEnabled:YES];
+			blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleRegular];
+		} 
+        
+        else {
 
-    lockedGlyph = [[UIImage alloc] initWithContentsOfFile:@"/Library/Application Support/Notations/locked.png"];
-    unlockedGlyph = [[UIImage alloc] initWithContentsOfFile:@"/Library/Application Support/Notations/unlocked.png"];
-    deleteGlyph = [[UIImage alloc] initWithContentsOfFile:@"/Library/Application Support/Notations/delete.png"];
-    UIColor *buttonColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
+			blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+		}
 
-    lockButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
 
-    [lockButton setImage:unlockedGlyph forState:UIControlStateNormal];
-    [lockButton addTarget:self action:@selector(disableActions) forControlEvents:UIControlEventTouchUpInside];
-    [lockButton setBackgroundColor:buttonColor];
-    lockButton.frame = CGRectMake(5, 5, 30, 30);
-    lockButton.layer.cornerRadius = 15.0;
+        blurEffectView.layer.cornerRadius = 20;
+        blurEffectView.frame = self.view.bounds;
+        blurEffectView.layer.masksToBounds = YES;
+        blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
-    if (self.draggable) {
+        [self.view setBackgroundColor:[UIColor clearColor]];
+        [self.view addSubview:blurEffectView];
+        [self.view addGestureRecognizer:tapRecognizer];
+        [self.view addGestureRecognizer:dragGesture];    
+        [self.view setUserInteractionEnabled:YES];
+
+        lockedGlyph = [[UIImage alloc] initWithContentsOfFile:@"/Library/Application Support/Notations/locked.png"];
+        unlockedGlyph = [[UIImage alloc] initWithContentsOfFile:@"/Library/Application Support/Notations/unlocked.png"];
+        deleteGlyph = [[UIImage alloc] initWithContentsOfFile:@"/Library/Application Support/Notations/delete.png"];
+        UIColor *buttonColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
+
+        lockButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
 
         [lockButton setImage:unlockedGlyph forState:UIControlStateNormal];
+        [lockButton addTarget:self action:@selector(disableActions) forControlEvents:UIControlEventTouchUpInside];
+        [lockButton setBackgroundColor:buttonColor];
+        lockButton.frame = CGRectMake(5, 5, 30, 30);
+        lockButton.layer.cornerRadius = 15.0;
+
+        if (self.draggable) {
+
+            [lockButton setImage:unlockedGlyph forState:UIControlStateNormal];
+        }
+
+        else {
+
+            [lockButton setImage:lockedGlyph forState:UIControlStateNormal];
+        }
+
+        [deleteButton setImage:deleteGlyph forState:UIControlStateNormal];
+        [deleteButton addTarget:self action:@selector(deleteNote) forControlEvents:UIControlEventTouchUpInside];
+        [deleteButton setBackgroundColor:buttonColor];
+        deleteButton.frame = CGRectMake(self.width - 35, 5, 30, 30);
+        deleteButton.layer.cornerRadius = 15.0;
+
+        [self.view addSubview:lockButton];
+        [self.view addSubview:deleteButton];
+
+        self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 50, self.width - 20, self.height - 60)];
+        [self.textView setBackgroundColor:[UIColor clearColor]];
+        [self.textView setFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
+        [self.view addSubview:self.textView];
+
+        if (self.text != nil) {
+
+            self.textView.text = self.text;
+        }
+
+        [self saveNote];
     }
-
-    else {
-
-        [lockButton setImage:lockedGlyph forState:UIControlStateNormal];
-    }
-
-    [delete setImage:deleteGlyph forState:UIControlStateNormal];
-    [deleteButton addTarget:self action:@selector(deleteNote) forControlEvents:UIControlEventTouchUpInside];
-    [deleteButton setBackgroundColor:buttonColor];
-    deleteButton.frame = CGRectMake(self.width - 35, 5, 30, 30);
-    deleteButton.layer.cornerRadius = 15.0;
-
-    [self.view addSubview:lockButton];
-    [self.view addSubview:deleteButton];
-
-    self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 50, self.width - 20, self.height - 60)];
-    [self.textView setBackgroundColor:[UIColor clearColor]];
-    [self.view addSubview:self.textView];
-
-    if (self.text != nil) {
-
-        self.textView.text = self.text;
-    }
-
-    [self saveNote];
 }
 
 - (void)dragView:(UIPanGestureRecognizer*)gesture {
