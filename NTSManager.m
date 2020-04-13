@@ -69,6 +69,19 @@
     }
 }
 
+- (void)reloadNotes {
+
+    for (NTSNote *note in self.notes) {
+
+        [note.view removeFromSuperview];
+        [note setupView];
+        note.presented = NO;
+
+        [self.view addSubview:note.view];
+        note.presented = YES;
+    }
+}
+
 - (void)updateNotes {
 
     for (NTSNote *note in self.notes) {

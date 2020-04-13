@@ -52,16 +52,30 @@ UIButton *deleteButton;
         self.view = [[UIView alloc] initWithFrame:CGRectMake(self.x, self.y, self.width, self.height)];
         self.view.layer.cornerRadius = 20.0;
 
-        UIBlurEffect *blurEffect;
-        if (SYSTEM_VERSION(@"13.0")) {
+        UIBlurEffect *blurEffect;       
 
-			blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleRegular];
-		} 
-        
+        if ([NTSManager sharedInstance].colorStyle == 0) {
+
+            if (SYSTEM_VERSION(@"13.0")) {
+
+			    blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleRegular];
+		    } 
+
+            else {
+
+                blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+            }
+        }
+
+        else if ([NTSManager sharedInstance].colorStyle == 2) {
+
+            blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        }
+
         else {
 
-			blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-		}
+            blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+        }
 
         UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
 
@@ -111,7 +125,7 @@ UIButton *deleteButton;
 
         self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 50, self.width - 20, self.height - 60)];
         [self.textView setBackgroundColor:[UIColor clearColor]];
-        [self.textView setFont:[UIFont systemFontOfSize:[UIFont systemFontSize]]];
+        [self.textView setFont:[UIFont systemFontOfSize:[NTSManager sharedInstance].textSize]];
         [self.view addSubview:self.textView];
 
         if (self.text != nil) {
