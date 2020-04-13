@@ -13,9 +13,7 @@ BOOL visible;
 - (void)viewDidLoad {
 
     %orig;
-
-    [[NSUserDefaults standardUserDefaults] synchronize];
-
+	
     UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(createNote:)];
     [self.view addGestureRecognizer:pressRecognizer];
 
