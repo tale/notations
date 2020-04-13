@@ -1,2 +1,3 @@
-.theos/
+# Theos Ignore Files
+theos/
 packages/
