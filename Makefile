@@ -7,7 +7,7 @@ include $(THEOS)/makefiles/common.mk
 TWEAK_NAME = Notations
 
 Notations_FILES = Tweak.x $(wildcard *.m)
-Notations_CFLAGS = -fobjc-arc
+Notations_CFLAGS = -fobjc-arc -Wno-deprecated-declarations
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 SUBPROJECTS += preferences
