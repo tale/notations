@@ -8,7 +8,6 @@
 UIView *emptyView;
 
 + (instancetype)sharedInstance {
-
 	static NTSManager *instance = nil;
 	static dispatch_once_t onceToken;
 	
@@ -20,7 +19,7 @@ UIView *emptyView;
 	return instance;
 }
 
-- (id)init {
+- (instancetype)init {
 	return [NTSManager sharedInstance];
 }
 
@@ -67,9 +66,7 @@ UIView *emptyView;
 }
 
 - (void)reloadNotes {
-
 	for (NTSNote *note in self.notes) {
-
 		[note.view removeFromSuperview];
 		[note setupView];
 		note.presented = NO;
@@ -80,9 +77,7 @@ UIView *emptyView;
 }
 
 - (void)updateNotes {
-
 	for (NTSNote *note in self.notes) {
-
 		[note setupView];
 		[note.view removeFromSuperview];
 		[self.view addSubview:note.view];
@@ -91,9 +86,7 @@ UIView *emptyView;
 }
 
 - (void)addEmptyNote {
-
 	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"notations_tutorial"]) {
-
 		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"notations_tutorial"];
 		[[NSUserDefaults standardUserDefaults] synchronize];
 
@@ -137,6 +130,9 @@ UIView *emptyView;
 - (void)showNotes {
 	if (!self.window) {
 		self.window = [[NTSWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+	}
+	for (NTSNote *note in self.notes) {
+		[note willShowView];
 	}
 
 	self.window.windowLevel = UIWindowLevelStatusBar + 100.0;

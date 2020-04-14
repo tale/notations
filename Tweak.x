@@ -9,6 +9,8 @@ static NSMutableDictionary *preferences;
 static BOOL enabled;
 static NSInteger gesture;
 
+static NSMutableArray *viewsToUpdate;
+
 static void updatePreferences() {
 	CFArrayRef preferencesKeyList = CFPreferencesCopyKeyList((CFStringRef)bundleIdentifier, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
 	if (preferencesKeyList) {
@@ -35,6 +37,16 @@ static void updatePreferences() {
 	}
 
 	[[NTSManager sharedInstance] reloadNotes];
+
+	// Update gestures
+	// They're not all SBMainDisplaySceneLayoutStatusBarViews, that's just so we don't have to do an ugly cast.
+	for (SBMainDisplaySceneLayoutStatusBarView *view in viewsToUpdate) {
+		if ([view respondsToSelector:@selector(updateNotations)]) [view updateNotations];
+	}
+}
+
+static void PreferencesChangedCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+	updatePreferences();
 }
 
 // Hide notes on power button press
@@ -75,28 +87,38 @@ static void updatePreferences() {
 
 // Home screen gestures
 %hook SBHomeScreenViewController
+%property (nonatomic, retain) UIGestureRecognizer *notationsGesture;
 
 - (void)viewDidLoad {
 	%orig;
 
+	[[NTSManager sharedInstance] initView];
+
+	UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(createNote:)];
+	[[NTSManager sharedInstance].view addGestureRecognizer:pressRecognizer];
+
+	[[NTSManager sharedInstance] loadNotes];
+	[[NTSManager sharedInstance] updateNotes];
+
+	[self updateNotations];
+	if (![viewsToUpdate containsObject:self]) {
+		[viewsToUpdate addObject:self];
+	}
+}
+
+%new
+- (void)updateNotations {
+	if (self.notationsGesture) [self.view removeGestureRecognizer:self.notationsGesture];
 	if (enabled) {
 		if (gesture == 2) {
-			UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
-			notationsGesture.numberOfTapsRequired = 2;
-			[self.view addGestureRecognizer:notationsGesture];
+			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
+			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 2;
+			[self.view addGestureRecognizer:self.notationsGesture];
 		} else if (gesture == 3) {
-			UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
-			notationsGesture.numberOfTapsRequired = 3;
-			[self.view addGestureRecognizer:notationsGesture];
+			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
+			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 3;
+			[self.view addGestureRecognizer:self.notationsGesture];
 		}
-
-		[[NTSManager sharedInstance] initView];
-
-		UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(createNote:)];
-		[[NTSManager sharedInstance].view addGestureRecognizer:pressRecognizer];
-
-		[[NTSManager sharedInstance] loadNotes];
-		[[NTSManager sharedInstance] updateNotes];
 	}
 }
 
@@ -114,44 +136,79 @@ static void updatePreferences() {
 
 // Status bar gestures
 %hook UIStatusBarWindow
+%property (nonatomic, retain) UIGestureRecognizer *notationsGesture;
 
 - (instancetype)initWithFrame:(CGRect)frame {
 	self = %orig;
-
-	if (gesture == 0) {
-		UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
-		notationsGesture.numberOfTapsRequired = 2;
-		[self addGestureRecognizer:notationsGesture];
-	} else if (gesture == 1) {
-		UILongPressGestureRecognizer *notationsGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
-		[self addGestureRecognizer:notationsGesture];
+	[self updateNotations];
+	if (![viewsToUpdate containsObject:self]) {
+		[viewsToUpdate addObject:self];
 	}
-
 	return self;
+}
+
+%new
+- (void)updateNotations {
+	if (self.notationsGesture) [self removeGestureRecognizer:self.notationsGesture];
+	if (enabled) {
+		if (gesture == 0) {
+			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
+			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 2;
+			[self addGestureRecognizer:self.notationsGesture];
+		} else if (gesture == 1) {
+			self.notationsGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressStatusBar:)];
+			[self addGestureRecognizer:self.notationsGesture];
+		}
+	}
+}
+
+%new
+- (void)longPressStatusBar:(UILongPressGestureRecognizer *)sender {
+	if (sender.state == UIGestureRecognizerStateBegan) {
+		[[NTSManager sharedInstance] toggleNotes];
+	}
 }
 
 %end
 
 %hook SBMainDisplaySceneLayoutStatusBarView
+%property (nonatomic, retain) UIGestureRecognizer *notationsGesture;
 
 - (void)_addStatusBarIfNeeded {
 	%orig;
+	[self updateNotations];
+	if (![viewsToUpdate containsObject:self]) {
+		[viewsToUpdate addObject:self];
+	}
+}
 
+%new
+- (void)updateNotations {
 	UIView *statusBar = [self valueForKey:@"_statusBar"];
+	if (self.notationsGesture) [statusBar removeGestureRecognizer:self.notationsGesture];
+	if (enabled) {
+		if (gesture == 0) {
+			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
+			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 2;
+			[statusBar addGestureRecognizer:self.notationsGesture];
+		} else if (gesture == 1) {
+			self.notationsGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressStatusBar:)];
+			[statusBar addGestureRecognizer:self.notationsGesture];
+		}
+	}
+}
 
-	if (gesture == 0) {
-		UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
-		notationsGesture.numberOfTapsRequired = 2;
-		[statusBar addGestureRecognizer:notationsGesture];
-	} else if (gesture == 1) {
-		UILongPressGestureRecognizer *notationsGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
-		[self addGestureRecognizer:notationsGesture];
-		[statusBar addGestureRecognizer:notationsGesture];
+%new
+- (void)longPressStatusBar:(UILongPressGestureRecognizer *)sender {
+	if (sender.state == UIGestureRecognizerStateBegan) {
+		[[NTSManager sharedInstance] toggleNotes];
 	}
 }
 
 %end
 
 %ctor {
+	viewsToUpdate = [NSMutableArray new];
 	updatePreferences();
+	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback) PreferencesChangedCallback, (CFStringRef)[NSString stringWithFormat:@"%@.prefsupdate", bundleIdentifier], NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 }

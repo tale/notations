@@ -16,36 +16,25 @@
 		UIBlurEffect *blurEffect;
 
 		if ([NTSManager sharedInstance].colorStyle == 0) {
-
 			if (SYSTEM_VERSION(@"13.0")) {
-
 				blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleRegular];
-			}
-
-			else {
-
+			} else {
 				blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
 			}
-		}
-
-		else if ([NTSManager sharedInstance].colorStyle == 2) {
-
+		} else if ([NTSManager sharedInstance].colorStyle == 2) {
 			blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-		}
-
-		else {
-
+		} else {
 			blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
 		}
 
-		UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+		self.blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
 
-		blurEffectView.layer.cornerRadius = 20;
-		blurEffectView.frame = self.bounds;
-		blurEffectView.layer.masksToBounds = YES;
-		blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+		self.blurEffectView.layer.cornerRadius = 20;
+		self.blurEffectView.frame = self.bounds;
+		self.blurEffectView.layer.masksToBounds = YES;
+		self.blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
-		[self addSubview:blurEffectView];
+		[self addSubview:self.blurEffectView];
 
 		// Buttons
 		UIColor *buttonColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
@@ -75,27 +64,14 @@
 		self.textView.font = [UIFont systemFontOfSize:[NTSManager sharedInstance].textSize];
 
 		if ([NTSManager sharedInstance].textAlignment == 1) {
-
 			self.textView.textAlignment = NSTextAlignmentLeft;
-		}
-
-		else if ([NTSManager sharedInstance].textAlignment == 2) {
-
+		} else if ([NTSManager sharedInstance].textAlignment == 2) {
 			self.textView.textAlignment = NSTextAlignmentCenter;
-		}
-
-		else if ([NTSManager sharedInstance].textAlignment == 3) {
-
+		} else if ([NTSManager sharedInstance].textAlignment == 3) {
 			self.textView.textAlignment = NSTextAlignmentRight;
-		}
-
-		else if ([NTSManager sharedInstance].textAlignment == 4) {
-
+		} else if ([NTSManager sharedInstance].textAlignment == 4) {
 			self.textView.textAlignment = NSTextAlignmentJustified;
-		}
-
-		else {
-
+		} else {
 			self.textView.textAlignment = NSTextAlignmentNatural;
 		}
 
@@ -103,6 +79,24 @@
 	}
 
 	return self;
+}
+
+- (void)updateEffect {
+	UIBlurEffect *blurEffect;
+
+	if ([NTSManager sharedInstance].colorStyle == 0) {
+		if (SYSTEM_VERSION(@"13.0")) {
+			blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleRegular];
+		} else {
+			blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+		}
+	} else if ([NTSManager sharedInstance].colorStyle == 2) {
+		blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+	} else {
+		blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+	}
+
+	self.blurEffectView.effect = blurEffect;
 }
 
 @end
