@@ -9,7 +9,7 @@ NotationsPrefs_FILES = NTSRootListController.m $(wildcard SkittyPrefs/*.m)
 NotationsPrefs_INSTALL_PATH = /Library/PreferenceBundles
 NotationsPrefs_FRAMEWORKS = UIKit
 NotationsPrefs_PRIVATE_FRAMEWORKS = Preferences
-NotationsPrefs_CFLAGS = -fobjc-arc
+NotationsPrefs_CFLAGS = -fobjc-arc  -Wno-deprecated-declarations
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

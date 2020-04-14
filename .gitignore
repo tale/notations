@@ -1,3 +1,6 @@
 # Theos Ignore Files
 .theos/
 packages/
+
+# Other
+.DS_Store
