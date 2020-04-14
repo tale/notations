@@ -210,6 +210,16 @@
 			<key>twitter</key>
 			<string>Renaitare</string>
 			<key>subtitle</key>
+			<string>Lead Developer</string>
+		</dict>
+		<dict>
+			<key>cellClass</key>
+			<string>SPCreditCell</string>
+			<key>label</key>
+			<string>Skitty</string>
+			<key>twitter</key>
+			<string>Skittyblock</string>
+			<key>subtitle</key>
 			<string>Developer</string>
 		</dict>
 		<dict>
@@ -221,16 +231,6 @@
 			<string>thatmirac</string>
 			<key>subtitle</key>
 			<string>Icon Designer</string>
-		</dict>
-		<dict>
-			<key>cellClass</key>
-			<string>SPCreditCell</string>
-			<key>label</key>
-			<string>Skitty</string>
-			<key>twitter</key>
-			<string>Skittyblock</string>
-			<key>subtitle</key>
-			<string>Preferences Developer</string>
 		</dict>
 		<dict>
 			<key>cellClass</key>
