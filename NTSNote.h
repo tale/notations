@@ -17,5 +17,6 @@
 - (id)initWithCoder:(NSCoder *)decoder;
 - (void)encodeWithCoder:(NSCoder *)encoder;
 - (void)setupView;
+- (void)willShowView;
 
 @end
