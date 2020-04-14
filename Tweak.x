@@ -38,6 +38,7 @@ static void updatePreferences() {
 	gesture = [([preferences objectForKey:@"gesture"] ?: @(0)) integerValue];
 	[NTSManager sharedInstance].colorStyle = [([preferences objectForKey:@"style"] ?: @(0)) integerValue];
 	[NTSManager sharedInstance].useCustomTextSize = [([preferences objectForKey:@"useCustomTextSize"] ?: @(NO)) boolValue];
+	[NTSManager sharedInstance].textAlignment = [([preferences objectForKey:@"textAlignment"] ?: @(0)) integerValue];
 
 	if ([NTSManager sharedInstance].useCustomTextSize == YES) {
 
