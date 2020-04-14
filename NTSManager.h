@@ -4,7 +4,7 @@
 
 @interface NTSManager : NSObject
 
-@property (nonatomic, retain) UIView *view;
+@property (nonatomic, retain) UIView *notesView;
 @property (nonatomic, retain) UILabel *addLabel;
 @property (nonatomic, retain) NSMutableArray<NTSNote *> *notes;
 @property (nonatomic, retain) NTSWindow *window;
@@ -16,10 +16,10 @@
 
 + (instancetype)sharedInstance;
 - (id)init;
-- (void)initView;
+- (void)loadView;
 - (void)addNote:(NTSNote *)note;
 - (void)removeNote:(NTSNote *)note;
-- (void)createNote:(CGPoint)position;
+- (void)createNote:(UILongPressGestureRecognizer *)sender;
 - (void)loadNotes;
 - (void)updateNotes;
 - (void)toggleNotesShown;

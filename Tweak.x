@@ -90,13 +90,8 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 - (void)viewDidLoad {
 	%orig;
 
-	[[NTSManager sharedInstance] initView];
-
-	UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(createNote:)];
-	[[NTSManager sharedInstance].view addGestureRecognizer:pressRecognizer];
-
+	[[NTSManager sharedInstance] loadView];
 	[[NTSManager sharedInstance] loadNotes];
-	[[NTSManager sharedInstance] updateNotes];
 
 	[self updateNotations];
 	if (![viewsToUpdate containsObject:self]) {
@@ -116,16 +111,6 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotesShown)];
 			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 3;
 			[self.view addGestureRecognizer:self.notationsGesture];
-		}
-	}
-}
-
-%new
-- (void)createNote:(UILongPressGestureRecognizer *)sender {
-	if (sender.state == UIGestureRecognizerStateBegan) {
-		if ([NTSManager sharedInstance].windowVisible) {
-			CGPoint position = [sender locationInView:self.view];
-			[[NTSManager sharedInstance] createNote:position];
 		}
 	}
 }

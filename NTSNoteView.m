@@ -99,4 +99,22 @@
 	self.blurEffectView.effect = blurEffect;
 }
 
+- (void)setHidden:(BOOL)hidden {
+	if (!hidden) {
+		self.transform = CGAffineTransformMakeScale(0, 0);
+		[super setHidden:hidden];
+		[UIView animateWithDuration:0.3 animations:^{
+			self.transform = CGAffineTransformMakeScale(1, 1);
+		} completion:nil];
+	} else {
+		self.transform = CGAffineTransformMakeScale(1, 1);
+		[UIView animateWithDuration:0.3 animations:^{
+			self.transform = CGAffineTransformMakeScale(0.01, 0.01); // Not possible to animate scale to 0
+		} completion:^(BOOL finished) {
+			[super setHidden:hidden];
+			[self removeFromSuperview];
+		}];
+	}
+}
+
 @end
