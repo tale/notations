@@ -46,7 +46,6 @@ UIButton *deleteButton;
 
     if (self.presented == NO) {
 
-        UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismissKeyboard)];
         UIPanGestureRecognizer *dragGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(dragView:)];
 
         self.view = [[UIView alloc] initWithFrame:CGRectMake(self.x, self.y, self.width, self.height)];
@@ -86,7 +85,6 @@ UIButton *deleteButton;
 
         [self.view setBackgroundColor:[UIColor clearColor]];
         [self.view addSubview:blurEffectView];
-        [self.view addGestureRecognizer:tapRecognizer];
         [self.view addGestureRecognizer:dragGesture];    
         [self.view setUserInteractionEnabled:YES];
 
@@ -123,7 +121,17 @@ UIButton *deleteButton;
         [self.view addSubview:lockButton];
         [self.view addSubview:deleteButton];
 
+        UIToolbar* keyboardBar = [[UIToolbar alloc] init];
+        [keyboardBar sizeToFit];
+
+        UIBarButtonItem *flexBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+        UIBarButtonItem *doneBarButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissKeyboard)];
+
+        keyboardBar.items = @[flexBarButton, doneBarButton];
+
         self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 50, self.width - 20, self.height - 60)];
+        self.textView.inputAccessoryView = keyboardBar;
+
         [self.textView setBackgroundColor:[UIColor clearColor]];
         [self.textView setFont:[UIFont systemFontOfSize:[NTSManager sharedInstance].textSize]];
         [self.view addSubview:self.textView];
@@ -222,7 +230,6 @@ UIButton *deleteButton;
 - (void)dismissKeyboard {
 
     [self.textView resignFirstResponder];
-    [self.textView endEditing:YES];
     self.text = self.textView.text;
     [self saveNote];
 }

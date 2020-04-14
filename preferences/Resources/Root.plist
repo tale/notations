@@ -22,7 +22,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Settings (Respring to apply changes)</string>
+			<string>Settings</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -37,42 +37,6 @@
 			<string>Enabled</string>
 			<key>PostNotification</key>
 			<string>dev.renaitare.notations.prefsupdate</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>defaults</key>
-			<string>dev.renaitare.notations</string>
-			<key>PostNotification</key>
-			<string>dev.renaitare.notations.prefsupdate</string>
-			<key>key</key>
-			<string>useCustomTextSize</string>
-			<key>label</key>
-			<string>Custom Text Size</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSliderCell</string>
-			<key>defaults</key>
-			<string>dev.renaitare.notations</string>
-			<key>PostNotification</key>
-			<string>dev.renaitare.notations.prefsupdate</string>
-			<key>showValue</key>
-			<true/>
-			<key>default</key>
-			<real>14</real>
-			<key>min</key>
-			<real>2</real>
-			<key>max</key>
-			<real>20</real>
-			<key>isSegmented</key>
-			<true/>
-			<key>segmentCount</key>
-			<integer>18</integer>
-			<key>key</key>
-			<string>customTextSize</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -101,6 +65,72 @@
 				<integer>1</integer>
 				<integer>2</integer>
 			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>detail</key>
+			<string>PSListItemsController</string>
+			<key>default</key>
+			<integer>0</integer>
+			<key>defaults</key>
+			<string>dev.renaitare.notations</string>
+			<key>PostNotification</key>
+			<string>dev.renaitare.notations.prefsupdate</string>
+			<key>key</key>
+			<string>gesture</string>
+			<key>label</key>
+			<string>Gesture</string>
+			<key>validTitles</key>
+			<array>
+				<string>Double-Tap Status Bar</string>
+				<string>Long-Press Status Bar</string>
+				<string>Double-Tap Home Screen</string>
+				<string>Triple-Tap Home Screen</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+				<integer>3</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>dev.renaitare.notations</string>
+			<key>PostNotification</key>
+			<string>dev.renaitare.notations.prefsupdate</string>
+			<key>key</key>
+			<string>useCustomTextSize</string>
+			<key>label</key>
+			<string>Custom Text Size</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>defaults</key>
+			<string>dev.renaitare.notations</string>
+			<key>PostNotification</key>
+			<string>dev.renaitare.notations.prefsupdate</string>
+			<key>showValue</key>
+			<true/>
+			<key>default</key>
+			<real>14</real>
+			<key>min</key>
+			<real>10</real>
+			<key>max</key>
+			<real>24</real>
+			<key>isSegmented</key>
+			<true/>
+			<key>segmentCount</key>
+			<integer>14</integer>
+			<key>key</key>
+			<string>customTextSize</string>
 		</dict>
 		<dict>
 			<key>cell</key>

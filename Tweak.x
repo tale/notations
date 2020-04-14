@@ -11,6 +11,7 @@ static NSString *bundleIdentifier = @"dev.renaitare.notations";
 
 static NSMutableDictionary *preferences;
 static BOOL enabled;
+static NSInteger gesture;
 
 BOOL visible;
 
@@ -34,6 +35,7 @@ static void updatePreferences() {
 	}
 
 	enabled = [([preferences objectForKey:@"enabled"] ?: @(YES)) boolValue];
+    gesture = [([preferences objectForKey:@"gesture"] ?: @(0)) integerValue];
 	[NTSManager sharedInstance].colorStyle = [([preferences objectForKey:@"style"] ?: @(0)) integerValue];
 	[NTSManager sharedInstance].useCustomTextSize = [([preferences objectForKey:@"useCustomTextSize"] ?: @(NO)) boolValue];
 
@@ -58,14 +60,22 @@ static void updatePreferences() {
 	
     if (enabled == YES) {
 
+        if (gesture == 2) {
+
+            UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes)];
+            notationsGesture.numberOfTapsRequired = 2;
+            [self.view addGestureRecognizer:notationsGesture];
+        }
+
+        if (gesture == 3) {
+
+            UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes)];
+            notationsGesture.numberOfTapsRequired = 3;
+            [self.view addGestureRecognizer:notationsGesture];
+        }
+
         UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(createNote:)];
         [self.view addGestureRecognizer:pressRecognizer];
-
-        UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes:)];
-        tapRecognizer.numberOfTapsRequired = 2;
-
-        [self.view addGestureRecognizer:tapRecognizer];
-
 
         [[NTSManager sharedInstance] initView];
         [self.view addSubview:[NTSManager sharedInstance].view];
@@ -75,7 +85,7 @@ static void updatePreferences() {
 }
 
 %new
-- (void)showNotes:(UITapGestureRecognizer *)sender {
+- (void)showNotes {
 
     if (visible == NO) {
 
@@ -122,16 +132,24 @@ static void updatePreferences() {
 
     self = %orig;
 
-    UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes:)];
-    tapRecognizer.numberOfTapsRequired = 2;
+    if (gesture == 0) {
 
-    [self addGestureRecognizer:tapRecognizer];
+        UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes)];
+        notationsGesture.numberOfTapsRequired = 2;
+        [self addGestureRecognizer:notationsGesture];
+    }
+
+    if (gesture == 1) {
+
+        UILongPressGestureRecognizer *notationsGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes)];
+        [self addGestureRecognizer:notationsGesture];
+    }
 
     return self;
 }
 
 %new
-- (void)showNotes:(UITapGestureRecognizer *)sender {
+- (void)showNotes {
 
     if (visible == NO) {
 
