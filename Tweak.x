@@ -1,13 +1,8 @@
 #import "Tweak.h"
-
-@interface SBHomeScreenViewController : UIViewController
-@end
-
-@interface UIStatusBarWindow : UIWindow
-@end
+#import "NTSManager.h"
+#import "NTSNote.h"
 
 static NSString *bundleIdentifier = @"dev.renaitare.notations";
-
 
 static NSMutableDictionary *preferences;
 static BOOL enabled;
@@ -75,10 +70,11 @@ static void updatePreferences() {
 			[self.view addGestureRecognizer:notationsGesture];
 		}
 
-		UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(createNote:)];
-		[self.view addGestureRecognizer:pressRecognizer];
-
 		[[NTSManager sharedInstance] initView];
+
+		UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(createNote:)];
+		[[NTSManager sharedInstance].view addGestureRecognizer:pressRecognizer];
+
 		[self.view addSubview:[NTSManager sharedInstance].view];
 		[[NTSManager sharedInstance] loadNotes];
 		[[NTSManager sharedInstance] updateNotes];
@@ -111,7 +107,7 @@ static void updatePreferences() {
 			CGPoint position = [sender locationInView:self.view];
 
 			NTSNote *note = [[NTSNote alloc] init];
-			note.text = note.textView.text;
+			note.text = @"";
 			note.x = position.x - 100;
 			note.y = position.y - 100;
 			note.width = 200;

@@ -1,12 +1,9 @@
 #import <UIKit/UIKit.h>
-#import "NTSManager.h"
-
-#define SYSTEM_VERSION(version) ([[[UIDevice currentDevice] systemVersion] compare:version options:NSNumericSearch] != NSOrderedAscending)
+#import "NTSNoteView.h"
 
 @interface NTSNote : NSObject
 
-@property (nonatomic, retain) UIView *view;
-@property (nonatomic, retain) UITextView *textView;
+@property (nonatomic, retain) NTSNoteView *view;
 @property (nonatomic, retain) NSString *text;
 @property (nonatomic) NSInteger x;
 @property (nonatomic) NSInteger y;
@@ -20,7 +17,4 @@
 - (void)encodeWithCoder:(NSCoder *)encoder;
 - (void)setupView;
 
-@end
-
-@interface MTMaterialView : UIView
 @end

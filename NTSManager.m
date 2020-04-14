@@ -107,7 +107,7 @@ UIView *emptyView;
 		[[NSUserDefaults standardUserDefaults] synchronize];
 
 		NTSNote *note = [[NTSNote alloc] init];
-		note.text = note.textView.text;
+		note.text = @"";
 		note.x = [[UIScreen mainScreen] bounds].size.width / 2 - 100;
 		note.y = [[UIScreen mainScreen] bounds].size.height / 2 - 100;
 		note.width = 200;
