@@ -36,8 +36,6 @@ static void updatePreferences() {
 		[NTSManager sharedInstance].textSize = [UIFont systemFontSize];
 	}
 
-	[[NTSManager sharedInstance] reloadNotes];
-
 	// Update gestures
 	// They're not all SBMainDisplaySceneLayoutStatusBarViews, that's just so we don't have to do an ugly cast.
 	for (SBMainDisplaySceneLayoutStatusBarView *view in viewsToUpdate) {
@@ -111,11 +109,11 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 	if (self.notationsGesture) [self.view removeGestureRecognizer:self.notationsGesture];
 	if (enabled) {
 		if (gesture == 2) {
-			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
+			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotesShown)];
 			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 2;
 			[self.view addGestureRecognizer:self.notationsGesture];
 		} else if (gesture == 3) {
-			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
+			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotesShown)];
 			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 3;
 			[self.view addGestureRecognizer:self.notationsGesture];
 		}
@@ -152,7 +150,7 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 	if (self.notationsGesture) [self removeGestureRecognizer:self.notationsGesture];
 	if (enabled) {
 		if (gesture == 0) {
-			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
+			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotesShown)];
 			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 2;
 			[self addGestureRecognizer:self.notationsGesture];
 		} else if (gesture == 1) {
@@ -165,7 +163,7 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 %new
 - (void)longPressStatusBar:(UILongPressGestureRecognizer *)sender {
 	if (sender.state == UIGestureRecognizerStateBegan) {
-		[[NTSManager sharedInstance] toggleNotes];
+		[[NTSManager sharedInstance] toggleNotesShown];
 	}
 }
 
@@ -188,7 +186,7 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 	if (self.notationsGesture) [statusBar removeGestureRecognizer:self.notationsGesture];
 	if (enabled) {
 		if (gesture == 0) {
-			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
+			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotesShown)];
 			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 2;
 			[statusBar addGestureRecognizer:self.notationsGesture];
 		} else if (gesture == 1) {
@@ -201,7 +199,7 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 %new
 - (void)longPressStatusBar:(UILongPressGestureRecognizer *)sender {
 	if (sender.state == UIGestureRecognizerStateBegan) {
-		[[NTSManager sharedInstance] toggleNotes];
+		[[NTSManager sharedInstance] toggleNotesShown];
 	}
 }
 
