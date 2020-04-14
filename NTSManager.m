@@ -5,8 +5,6 @@
 
 @implementation NTSManager
 
-UIView *emptyView;
-
 + (instancetype)sharedInstance {
 	static NTSManager *instance = nil;
 	static dispatch_once_t onceToken;
@@ -33,27 +31,29 @@ UIView *emptyView;
 - (void)addNote:(NTSNote *)note {
 	[self.notes addObject:note];
 	[self.view addSubview:note.view];
+
 	[[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:self.notes] forKey:@"notations_notes"];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	
-	[self addEmptyNote];
+	[self updateNotes];
 }
 
 - (void)removeNote:(NTSNote *)note {
 	[self.notes removeObject:note];
 	[note.view removeFromSuperview];
+
 	[[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:self.notes] forKey:@"notations_notes"];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 
-	[self addEmptyNote];
+	[self updateNotes];
 }
 
 - (void)loadNotes {
 	NSData *notesArrayData = [[NSUserDefaults standardUserDefaults] objectForKey:@"notations_notes"];
 
-	if (notesArrayData != nil) {
+	if (notesArrayData) {
 		NSArray *savedNotesArray = [NSKeyedUnarchiver unarchiveObjectWithData:notesArrayData];
-		if (savedNotesArray != nil) {
+		if (savedNotesArray) {
 			self.notes = [[NSMutableArray alloc] initWithArray:savedNotesArray];
 		} else {
 			self.notes = [[NSMutableArray alloc] init];
@@ -65,43 +65,28 @@ UIView *emptyView;
 	}
 }
 
-- (void)reloadNotes {
-	for (NTSNote *note in self.notes) {
-		[note.view removeFromSuperview];
-		[note setupView];
-		note.presented = NO;
-
-		[self.view addSubview:note.view];
-		note.presented = YES;
-	}
-}
-
 - (void)updateNotes {
-	for (NTSNote *note in self.notes) {
-		[note setupView];
-		[note.view removeFromSuperview];
-		[self.view addSubview:note.view];
-		note.presented = YES;
-	}
-}
-
-- (void)addEmptyNote {
-	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"notations_tutorial"]) {
-		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"notations_tutorial"];
-		[[NSUserDefaults standardUserDefaults] synchronize];
-
-		NTSNote *note = [[NTSNote alloc] init];
-		note.text = @"";
-		note.x = [[UIScreen mainScreen] bounds].size.width / 2 - 100;
-		note.y = [[UIScreen mainScreen] bounds].size.height / 2 - 100;
-		note.width = 200;
-		note.height = 200;
-		note.draggable = YES;
-		note.resizeable = YES;
-		note.text = @"Long-Press to add more notes!\n\nYou can close this when you create your first note!";
-
-		[self addNote:note];
-		[self reloadNotes];
+	if (self.notes.count == 0) {
+		if (!self.addLabel) {
+			self.addLabel = [[UILabel alloc] init];
+			self.addLabel.text = @"Long press to add a note";
+			self.addLabel.textColor = [UIColor whiteColor];
+			[self.addLabel sizeToFit];
+			self.addLabel.frame = CGRectMake(self.view.bounds.size.width / 2 - self.addLabel.bounds.size.width / 2, self.view.bounds.size.height / 2 - self.addLabel.bounds.size.height / 2, self.addLabel.bounds.size.width, self.addLabel.bounds.size.height);
+			[self.view addSubview:self.addLabel];
+		}
+		self.addLabel.hidden = NO;
+	} else {
+		if (self.addLabel) {
+			self.addLabel.hidden = YES;
+		}
+		for (NTSNote *note in self.notes) {
+			[note setupView];
+			[note willShowView];
+			[note.view removeFromSuperview];
+			[self.view addSubview:note.view];
+			note.presented = YES;
+		}
 	}
 }
 
@@ -116,10 +101,9 @@ UIView *emptyView;
 	note.resizeable = YES;
 
 	[self addNote:note];
-	[self updateNotes];
 }
 
-- (void)toggleNotes {
+- (void)toggleNotesShown {
 	if (self.windowVisible) {
 		[self hideNotes];
 	} else {
@@ -131,9 +115,7 @@ UIView *emptyView;
 	if (!self.window) {
 		self.window = [[NTSWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
 	}
-	for (NTSNote *note in self.notes) {
-		[note willShowView];
-	}
+	[self updateNotes];
 
 	self.window.windowLevel = UIWindowLevelStatusBar + 100.0;
 	self.window.hidden = NO;
@@ -147,7 +129,6 @@ UIView *emptyView;
 	}
 	self.window.hidden = YES;
 	self.windowVisible = NO;
-	
 }
 
 @end
