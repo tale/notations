@@ -143,4 +143,12 @@
 	[self.view updateEffect];
 }
 
+- (void)didShowView {
+	self.view.hidden = NO;
+}
+
+- (void)willHideView {
+	self.view.hidden = YES;
+}
+
 @end

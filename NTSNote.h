@@ -18,5 +18,7 @@
 - (void)encodeWithCoder:(NSCoder *)encoder;
 - (void)setupView;
 - (void)willShowView;
+- (void)willHideView;
+- (void)didShowView;
 
 @end
