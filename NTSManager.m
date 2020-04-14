@@ -101,25 +101,23 @@ UIView *emptyView;
 
 - (void)addEmptyNote {
 
-	if ([[NSUserDefaults standardUserDefaults] objectForKey:@"notations_tutorial"] == nil) {
+	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"notations_tutorial"]) {
 
-		[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"notations_tutorial"];
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"notations_tutorial"];
 		[[NSUserDefaults standardUserDefaults] synchronize];
-		if (self.notes.count == 0) {
 
-			NTSNote *note = [[NTSNote alloc] init];
-			note.text = note.textView.text;
-			note.x = [[UIScreen mainScreen] bounds].size.width / 2 - 100;
-			note.y = [[UIScreen mainScreen] bounds].size.height / 2 - 100;
-			note.width = 200;
-			note.height = 200;
-			note.draggable = YES;
-			note.resizeable = YES;
-			note.text = @"Long-Press to add more notes!\n\nYou can close this when you create your first note!";
+		NTSNote *note = [[NTSNote alloc] init];
+		note.text = note.textView.text;
+		note.x = [[UIScreen mainScreen] bounds].size.width / 2 - 100;
+		note.y = [[UIScreen mainScreen] bounds].size.height / 2 - 100;
+		note.width = 200;
+		note.height = 200;
+		note.draggable = YES;
+		note.resizeable = YES;
+		note.text = @"Long-Press to add more notes!\n\nYou can close this when you create your first note!";
 
-			[self addNote:note];
-			[self reloadNotes];
-		}
+		[self addNote:note];
+		[self reloadNotes];
 	}
 }
 

@@ -134,6 +134,32 @@ UIButton *deleteButton;
 
 		[self.textView setBackgroundColor:[UIColor clearColor]];
 		[self.textView setFont:[UIFont systemFontOfSize:[NTSManager sharedInstance].textSize]];
+
+		if ([NTSManager sharedInstance].textAlignment == 1) {
+
+			self.textView.textAlignment = NSTextAlignmentLeft;
+		}
+
+		else if ([NTSManager sharedInstance].textAlignment == 2) {
+
+			self.textView.textAlignment = NSTextAlignmentCenter;
+		}
+
+		else if ([NTSManager sharedInstance].textAlignment == 3) {
+
+			self.textView.textAlignment = NSTextAlignmentRight;
+		}
+
+		else if ([NTSManager sharedInstance].textAlignment == 4) {
+
+			self.textView.textAlignment = NSTextAlignmentJustified;
+		}
+
+		else {
+
+			self.textView.textAlignment = NSTextAlignmentNatural;
+		}
+
 		[self.view addSubview:self.textView];
 
 		if (self.text != nil) {

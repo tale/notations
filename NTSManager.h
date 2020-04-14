@@ -7,6 +7,7 @@
 @property(nonatomic, retain) NSMutableArray<NTSNote *> *notes;
 @property(nonatomic) BOOL useCustomTextSize;
 @property(nonatomic) NSInteger textSize;
+@property(nonatomic) NSInteger textAlignment;
 @property(nonatomic) NSInteger colorStyle;
 
 + (instancetype)sharedInstance;
