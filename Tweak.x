@@ -17,14 +17,14 @@ BOOL visible;
 
 static void updatePreferences() {
 
-    CFArrayRef preferencesKeyList = CFPreferencesCopyKeyList((CFStringRef)bundleIdentifier, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+	CFArrayRef preferencesKeyList = CFPreferencesCopyKeyList((CFStringRef)bundleIdentifier, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
 	if(preferencesKeyList) {
 
 		preferences = (NSMutableDictionary *)CFBridgingRelease(CFPreferencesCopyMultiple(preferencesKeyList, (CFStringRef)bundleIdentifier, kCFPreferencesCurrentUser, kCFPreferencesAnyHost));
 		CFRelease(preferencesKeyList);
-	} 
-    
-    else {
+	}
+
+	else {
 
 		preferences = nil;
 	}
@@ -35,7 +35,7 @@ static void updatePreferences() {
 	}
 
 	enabled = [([preferences objectForKey:@"enabled"] ?: @(YES)) boolValue];
-    gesture = [([preferences objectForKey:@"gesture"] ?: @(0)) integerValue];
+	gesture = [([preferences objectForKey:@"gesture"] ?: @(0)) integerValue];
 	[NTSManager sharedInstance].colorStyle = [([preferences objectForKey:@"style"] ?: @(0)) integerValue];
 	[NTSManager sharedInstance].useCustomTextSize = [([preferences objectForKey:@"useCustomTextSize"] ?: @(NO)) boolValue];
 
@@ -44,84 +44,84 @@ static void updatePreferences() {
 		[NTSManager sharedInstance].textSize = [([preferences objectForKey:@"customTextSize"] ?: @(14)) integerValue];
 	}
 
-    else {
+	else {
 
-        [NTSManager sharedInstance].textSize = [UIFont systemFontSize];
-    }
+		[NTSManager sharedInstance].textSize = [UIFont systemFontSize];
+	}
 
-    [[NTSManager sharedInstance] reloadNotes];
+	[[NTSManager sharedInstance] reloadNotes];
 }
 
 %hook SBHomeScreenViewController
 
 - (void)viewDidLoad {
 
-    %orig;
-	
-    if (enabled == YES) {
+	%orig;
 
-        if (gesture == 2) {
+	if (enabled == YES) {
 
-            UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes)];
-            notationsGesture.numberOfTapsRequired = 2;
-            [self.view addGestureRecognizer:notationsGesture];
-        }
+		if (gesture == 2) {
 
-        if (gesture == 3) {
+			UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes)];
+			notationsGesture.numberOfTapsRequired = 2;
+			[self.view addGestureRecognizer:notationsGesture];
+		}
 
-            UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes)];
-            notationsGesture.numberOfTapsRequired = 3;
-            [self.view addGestureRecognizer:notationsGesture];
-        }
+		if (gesture == 3) {
 
-        UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(createNote:)];
-        [self.view addGestureRecognizer:pressRecognizer];
+			UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes)];
+			notationsGesture.numberOfTapsRequired = 3;
+			[self.view addGestureRecognizer:notationsGesture];
+		}
 
-        [[NTSManager sharedInstance] initView];
-        [self.view addSubview:[NTSManager sharedInstance].view];
-        [[NTSManager sharedInstance] loadNotes];
-        [[NTSManager sharedInstance] updateNotes];
-    }
+		UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(createNote:)];
+		[self.view addGestureRecognizer:pressRecognizer];
+
+		[[NTSManager sharedInstance] initView];
+		[self.view addSubview:[NTSManager sharedInstance].view];
+		[[NTSManager sharedInstance] loadNotes];
+		[[NTSManager sharedInstance] updateNotes];
+	}
 }
 
 %new
 - (void)showNotes {
 
-    if (visible == NO) {
+	if (visible == NO) {
 
-        [NTSManager sharedInstance].view.hidden = NO;
-        visible = YES;
-    }
+		[NTSManager sharedInstance].view.hidden = NO;
+		visible = YES;
+	}
 
-    else {
+	else {
 
-        [NTSManager sharedInstance].view.hidden = YES;
-        visible = NO;
-    }
+		[NTSManager sharedInstance].view.hidden = YES;
+		visible = NO;
+	}
 }
 
 %new
 - (void)createNote:(UILongPressGestureRecognizer *)sender {
 
-    if (sender.state == UIGestureRecognizerStateBegan) {
+	if (sender.state == UIGestureRecognizerStateBegan) {
 
-        if (visible == YES) {
+		if (visible == YES) {
 
-            CGPoint position = [sender locationInView:self.view];
+			CGPoint position = [sender locationInView:self.view];
 
-            NTSNote *note = [[NTSNote alloc] init];
-            note.text = note.textView.text;
-            note.x = position.x - 100;
-            note.y = position.y - 100;
-            note.width = 200;
-            note.height = 200;
-            note.draggable = YES;
-            note.resizeable = YES;
+			NTSNote *note = [[NTSNote alloc] init];
+			note.text = note.textView.text;
+			note.x = position.x - 100;
+			note.y = position.y - 100;
+			note.width = 200;
+			note.height = 200;
+			note.draggable = YES;
+			note.resizeable = YES;
 
-            [[NTSManager sharedInstance] addNote:note];
-            [[NTSManager sharedInstance] updateNotes];
-        }
-    }
+			[[NTSManager sharedInstance] addNote:note];
+			[[NTSManager sharedInstance] updateNotes];
+		}
+	}
 }
 
 %end
@@ -130,44 +130,44 @@ static void updatePreferences() {
 
 - (instancetype)initWithFrame:(CGRect)frame {
 
-    self = %orig;
+	self = %orig;
 
-    if (gesture == 0) {
+	if (gesture == 0) {
 
-        UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes)];
-        notationsGesture.numberOfTapsRequired = 2;
-        [self addGestureRecognizer:notationsGesture];
-    }
+		UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes)];
+		notationsGesture.numberOfTapsRequired = 2;
+		[self addGestureRecognizer:notationsGesture];
+	}
 
-    if (gesture == 1) {
+	if (gesture == 1) {
 
-        UILongPressGestureRecognizer *notationsGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes)];
-        [self addGestureRecognizer:notationsGesture];
-    }
+		UILongPressGestureRecognizer *notationsGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes)];
+		[self addGestureRecognizer:notationsGesture];
+	}
 
-    return self;
+	return self;
 }
 
 %new
 - (void)showNotes {
 
-    if (visible == NO) {
+	if (visible == NO) {
 
-        [NTSManager sharedInstance].view.hidden = NO;
-        visible = YES;
-    }
+		[NTSManager sharedInstance].view.hidden = NO;
+		visible = YES;
+	}
 
-    else {
+	else {
 
-        [NTSManager sharedInstance].view.hidden = YES;
-        visible = NO;
-    }
+		[NTSManager sharedInstance].view.hidden = YES;
+		visible = NO;
+	}
 }
 
 %end
 
 %ctor {
 
-    visible = NO;
+	visible = NO;
 	updatePreferences();
 }

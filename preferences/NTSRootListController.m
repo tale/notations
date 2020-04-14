@@ -64,10 +64,10 @@ typedef enum {
 
 - (void)respring {
 
-    SBSRelaunchAction *restartAction = [NSClassFromString(@"SBSRelaunchAction") actionWithReason:@"RestartRenderServer" options:SBSRelaunchOptionsFadeToBlack targetURL:[NSURL URLWithString:@"prefs:root=Notations"]];
-    NSSet *actions = [NSSet setWithObject:restartAction];
-    FBSSystemService *frontBoardService = [NSClassFromString(@"FBSSystemService") sharedService];
-    [frontBoardService sendActions:actions withResult:nil];
+	SBSRelaunchAction *restartAction = [NSClassFromString(@"SBSRelaunchAction") actionWithReason:@"RestartRenderServer" options:SBSRelaunchOptionsFadeToBlack targetURL:[NSURL URLWithString:@"prefs:root=Notations"]];
+	NSSet *actions = [NSSet setWithObject:restartAction];
+	FBSSystemService *frontBoardService = [NSClassFromString(@"FBSSystemService") sharedService];
+	[frontBoardService sendActions:actions withResult:nil];
 }
 
 @end
