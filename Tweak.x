@@ -8,7 +8,7 @@ static NSMutableDictionary *preferences;
 static BOOL enabled;
 static NSInteger gesture;
 
-BOOL visible;
+static BOOL visible;
 
 static void updatePreferences() {
 
@@ -47,6 +47,34 @@ static void updatePreferences() {
 
 	[[NTSManager sharedInstance] reloadNotes];
 }
+
+// Hide notes when locked
+static void displayStatusChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+	[NTSManager sharedInstance].view.hidden = YES;
+	visible = NO;
+}
+
+// Hide notes on home button press
+%hook SBIconController
+
+- (void)handleHomeButtonTap {
+	%orig;
+	[NTSManager sharedInstance].view.hidden = YES;
+	visible = NO;
+}
+
+%end
+
+// Hide notes when switcher opens
+%hook SBFluidSwitcherViewController
+
+- (void)viewWillAppear:(BOOL)arg1 {
+	%orig;
+	[NTSManager sharedInstance].view.hidden = YES;
+	visible = NO;
+}
+
+%end
 
 %hook SBHomeScreenViewController
 
@@ -167,4 +195,6 @@ static void updatePreferences() {
 
 	visible = NO;
 	updatePreferences();
+
+	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, displayStatusChanged, CFSTR("com.apple.iokit.hid.displayStatus"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 }
