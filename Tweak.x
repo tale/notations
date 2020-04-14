@@ -1,6 +1,7 @@
 #import "Tweak.h"
 #import "NTSManager.h"
 #import "NTSNote.h"
+#import "NTSWindow.h"
 
 static NSString *bundleIdentifier = @"dev.renaitare.notations";
 
@@ -8,24 +9,16 @@ static NSMutableDictionary *preferences;
 static BOOL enabled;
 static NSInteger gesture;
 
-static BOOL visible;
-
 static void updatePreferences() {
-
 	CFArrayRef preferencesKeyList = CFPreferencesCopyKeyList((CFStringRef)bundleIdentifier, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
-	if(preferencesKeyList) {
-
+	if (preferencesKeyList) {
 		preferences = (NSMutableDictionary *)CFBridgingRelease(CFPreferencesCopyMultiple(preferencesKeyList, (CFStringRef)bundleIdentifier, kCFPreferencesCurrentUser, kCFPreferencesAnyHost));
 		CFRelease(preferencesKeyList);
-	}
-
-	else {
-
+	} else {
 		preferences = nil;
 	}
 
 	if (preferences == nil) {
-
 		preferences = [[NSMutableDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", bundleIdentifier]];
 	}
 
@@ -36,31 +29,36 @@ static void updatePreferences() {
 	[NTSManager sharedInstance].textAlignment = [([preferences objectForKey:@"textAlignment"] ?: @(0)) integerValue];
 
 	if ([NTSManager sharedInstance].useCustomTextSize == YES) {
-
 		[NTSManager sharedInstance].textSize = [([preferences objectForKey:@"customTextSize"] ?: @(14)) integerValue];
-	}
-
-	else {
-
+	} else {
 		[NTSManager sharedInstance].textSize = [UIFont systemFontSize];
 	}
 
 	[[NTSManager sharedInstance] reloadNotes];
 }
 
-// Hide notes when locked
-static void displayStatusChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-	[NTSManager sharedInstance].view.hidden = YES;
-	visible = NO;
+// Hide notes on power button press
+%hook SBLockHardwareButton
+
+- (void)singlePress:(id)arg1 {
+	if ([NTSManager sharedInstance].windowVisible) {
+		[[NTSManager sharedInstance] hideNotes];
+		return;
+	}
+	%orig;
 }
 
-// Hide notes on home button press
-%hook SBIconController
+%end
 
-- (void)handleHomeButtonTap {
+// Hide notes on home button press
+%hook SBHomeHardwareButton
+
+- (void)singlePressUp:(id)arg1 {
+	if ([NTSManager sharedInstance].windowVisible) {
+		[[NTSManager sharedInstance] hideNotes];
+		return;
+	}
 	%orig;
-	[NTSManager sharedInstance].view.hidden = YES;
-	visible = NO;
 }
 
 %end
@@ -70,30 +68,24 @@ static void displayStatusChanged(CFNotificationCenterRef center, void *observer,
 
 - (void)viewWillAppear:(BOOL)arg1 {
 	%orig;
-	[NTSManager sharedInstance].view.hidden = YES;
-	visible = NO;
+	[[NTSManager sharedInstance] hideNotes];
 }
 
 %end
 
+// Home screen gestures
 %hook SBHomeScreenViewController
 
 - (void)viewDidLoad {
-
 	%orig;
 
-	if (enabled == YES) {
-
+	if (enabled) {
 		if (gesture == 2) {
-
-			UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes)];
+			UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
 			notationsGesture.numberOfTapsRequired = 2;
 			[self.view addGestureRecognizer:notationsGesture];
-		}
-
-		if (gesture == 3) {
-
-			UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes)];
+		} else if (gesture == 3) {
+			UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
 			notationsGesture.numberOfTapsRequired = 3;
 			[self.view addGestureRecognizer:notationsGesture];
 		}
@@ -103,98 +95,63 @@ static void displayStatusChanged(CFNotificationCenterRef center, void *observer,
 		UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(createNote:)];
 		[[NTSManager sharedInstance].view addGestureRecognizer:pressRecognizer];
 
-		[self.view addSubview:[NTSManager sharedInstance].view];
 		[[NTSManager sharedInstance] loadNotes];
 		[[NTSManager sharedInstance] updateNotes];
 	}
 }
 
 %new
-- (void)showNotes {
-
-	if (visible == NO) {
-
-		[NTSManager sharedInstance].view.hidden = NO;
-		visible = YES;
-	}
-
-	else {
-
-		[NTSManager sharedInstance].view.hidden = YES;
-		visible = NO;
-	}
-}
-
-%new
 - (void)createNote:(UILongPressGestureRecognizer *)sender {
-
 	if (sender.state == UIGestureRecognizerStateBegan) {
-
-		if (visible == YES) {
-
+		if ([NTSManager sharedInstance].windowVisible) {
 			CGPoint position = [sender locationInView:self.view];
-
-			NTSNote *note = [[NTSNote alloc] init];
-			note.text = @"";
-			note.x = position.x - 100;
-			note.y = position.y - 100;
-			note.width = 200;
-			note.height = 200;
-			note.draggable = YES;
-			note.resizeable = YES;
-
-			[[NTSManager sharedInstance] addNote:note];
-			[[NTSManager sharedInstance] updateNotes];
+			[[NTSManager sharedInstance] createNote:position];
 		}
 	}
 }
 
 %end
 
+// Status bar gestures
 %hook UIStatusBarWindow
 
 - (instancetype)initWithFrame:(CGRect)frame {
-
 	self = %orig;
 
 	if (gesture == 0) {
-
-		UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes)];
+		UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
 		notationsGesture.numberOfTapsRequired = 2;
 		[self addGestureRecognizer:notationsGesture];
-	}
-
-	if (gesture == 1) {
-
-		UILongPressGestureRecognizer *notationsGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(showNotes)];
+	} else if (gesture == 1) {
+		UILongPressGestureRecognizer *notationsGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
 		[self addGestureRecognizer:notationsGesture];
 	}
 
 	return self;
 }
 
-%new
-- (void)showNotes {
+%end
 
-	if (visible == NO) {
+%hook SBMainDisplaySceneLayoutStatusBarView
 
-		[NTSManager sharedInstance].view.hidden = NO;
-		visible = YES;
-	}
+- (void)_addStatusBarIfNeeded {
+	%orig;
 
-	else {
+	UIView *statusBar = [self valueForKey:@"_statusBar"];
 
-		[NTSManager sharedInstance].view.hidden = YES;
-		visible = NO;
+	if (gesture == 0) {
+		UITapGestureRecognizer *notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
+		notationsGesture.numberOfTapsRequired = 2;
+		[statusBar addGestureRecognizer:notationsGesture];
+	} else if (gesture == 1) {
+		UILongPressGestureRecognizer *notationsGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotes)];
+		[self addGestureRecognizer:notationsGesture];
+		[statusBar addGestureRecognizer:notationsGesture];
 	}
 }
 
 %end
 
 %ctor {
-
-	visible = NO;
 	updatePreferences();
-
-	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, displayStatusChanged, CFSTR("com.apple.iokit.hid.displayStatus"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 }
