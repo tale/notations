@@ -1,5 +1,6 @@
 #import "NTSNote.h"
 #import "NTSManager.h"
+#import "NTSNoteView.h"
 
 @implementation NTSNote
 

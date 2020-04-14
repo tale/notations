@@ -5,3 +5,6 @@
 
 @interface UIStatusBarWindow : UIWindow
 @end
+
+@interface SBMainDisplaySceneLayoutStatusBarView : UIView
+@end

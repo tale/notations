@@ -1,5 +1,6 @@
 #import <UIKit/UIKit.h>
-#import "NTSNoteView.h"
+
+@class NTSNoteView;
 
 @interface NTSNote : NSObject
 
