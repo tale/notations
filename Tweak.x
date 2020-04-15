@@ -2,6 +2,7 @@
 #import "NTSManager.h"
 #import "NTSNote.h"
 #import "NTSWindow.h"
+#import "NTSListener.h"
 
 static NSString *bundleIdentifier = @"dev.renaitare.notations";
 
@@ -240,6 +241,13 @@ static void toggleNotes(CFNotificationCenterRef center, void *observer, CFString
 			CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback) PreferencesChangedCallback, (CFStringRef)[NSString stringWithFormat:@"%@.prefsupdate", bundleIdentifier], NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 			CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, toggleNotes, (CFStringRef)[NSString stringWithFormat:@"%@.togglenotes", bundleIdentifier], NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 
+			if (isSpringBoard) {
+				dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
+				id la = %c(LAActivator);
+				if (la) {
+					[[la sharedInstance] registerListener:[NTSListener new] forName:@"dev.renaitare.notations.togglenotes"];
+				}
+			}
 		}
 	} 
 }
