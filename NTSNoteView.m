@@ -86,17 +86,34 @@
 
 	if ([NTSManager sharedInstance].colorStyle == 0) {
 		if (SYSTEM_VERSION(@"13.0")) {
+			self.textView.textColor = [UIColor labelColor];
 			blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleRegular];
 		} else {
+			self.textView.textColor = [UIColor blackColor];
 			blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
 		}
 	} else if ([NTSManager sharedInstance].colorStyle == 2) {
+		self.textView.textColor = [UIColor whiteColor];
 		blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
 	} else {
+		self.textView.textColor = [UIColor blackColor];
 		blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
 	}
 
 	self.blurEffectView.effect = blurEffect;
+
+	self.textView.font = [UIFont systemFontOfSize:[NTSManager sharedInstance].textSize];
+	if ([NTSManager sharedInstance].textAlignment == 1) {
+		self.textView.textAlignment = NSTextAlignmentLeft;
+	} else if ([NTSManager sharedInstance].textAlignment == 2) {
+		self.textView.textAlignment = NSTextAlignmentCenter;
+	} else if ([NTSManager sharedInstance].textAlignment == 3) {
+		self.textView.textAlignment = NSTextAlignmentRight;
+	} else if ([NTSManager sharedInstance].textAlignment == 4) {
+		self.textView.textAlignment = NSTextAlignmentJustified;
+	} else {
+		self.textView.textAlignment = NSTextAlignmentNatural;
+	}
 }
 
 - (void)setHidden:(BOOL)hidden {
