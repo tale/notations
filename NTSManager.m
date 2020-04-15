@@ -31,6 +31,9 @@
 		UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(createNote:)];
 		[self.notesView addGestureRecognizer:pressRecognizer];
 	}
+	if (!self.window) {
+		self.window = [[NTSWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+	}
 }
 
 - (void)addNote:(NTSNote *)note {
@@ -104,7 +107,7 @@
 
 - (void)createNote:(UILongPressGestureRecognizer *)sender {
 	if (sender.state == UIGestureRecognizerStateBegan) {
-		if ([NTSManager sharedInstance].windowVisible) {
+		if (self.windowVisible) {
 			CGPoint position = [sender locationInView:self.notesView];
 			NTSNote *note = [[NTSNote alloc] init];
 			note.text = @"";
@@ -128,9 +131,6 @@
 }
 
 - (void)showNotes {
-	if (!self.window) {
-		self.window = [[NTSWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-	}
 	for (NTSNote *note in self.notes) {
 		[note willShowView];
 	}
@@ -147,9 +147,6 @@
 }
 
 - (void)hideNotes {
-	if (!self.window) {
-		self.window = [[NTSWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-	}
 	for (NTSNote *note in self.notes) {
 		[note willHideView];
 	}

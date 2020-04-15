@@ -83,16 +83,23 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 
 %end
 
+// Initialize notes view
+%hook SpringBoard
+
+- (void)applicationDidFinishLaunching:(id)arg1 {
+	%orig;
+	[[NTSManager sharedInstance] loadView];
+	[[NTSManager sharedInstance] loadNotes];
+}
+
+%end
+
 // Home screen gestures
 %hook SBHomeScreenViewController
 %property (nonatomic, retain) UIGestureRecognizer *notationsGesture;
 
 - (void)viewDidLoad {
 	%orig;
-
-	[[NTSManager sharedInstance] loadView];
-	[[NTSManager sharedInstance] loadNotes];
-
 	[self updateNotations];
 	if (![viewsToUpdate containsObject:self]) {
 		[viewsToUpdate addObject:self];
@@ -104,15 +111,20 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 	if (self.notationsGesture) [self.view removeGestureRecognizer:self.notationsGesture];
 	if (enabled) {
 		if (gesture == 2) {
-			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotesShown)];
+			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleNotesShown)];
 			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 2;
 			[self.view addGestureRecognizer:self.notationsGesture];
 		} else if (gesture == 3) {
-			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotesShown)];
+			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleNotesShown)];
 			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 3;
 			[self.view addGestureRecognizer:self.notationsGesture];
 		}
 	}
+}
+
+%new
+- (void)toggleNotesShown {
+	CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), (CFStringRef)[NSString stringWithFormat:@"%@.togglenotes", bundleIdentifier], nil, nil, true);
 }
 
 %end
@@ -135,7 +147,7 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 	if (self.notationsGesture) [self removeGestureRecognizer:self.notationsGesture];
 	if (enabled) {
 		if (gesture == 0) {
-			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotesShown)];
+			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleNotesShown)];
 			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 2;
 			[self addGestureRecognizer:self.notationsGesture];
 		} else if (gesture == 1) {
@@ -148,11 +160,18 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 %new
 - (void)longPressStatusBar:(UILongPressGestureRecognizer *)sender {
 	if (sender.state == UIGestureRecognizerStateBegan) {
-		[[NTSManager sharedInstance] toggleNotesShown];
+		[self toggleNotesShown];
 	}
 }
 
+%new
+- (void)toggleNotesShown {
+	CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), (CFStringRef)[NSString stringWithFormat:@"%@.togglenotes", bundleIdentifier], nil, nil, true);
+}
+
 %end
+
+%group iOS13StatusBar
 
 %hook SBMainDisplaySceneLayoutStatusBarView
 %property (nonatomic, retain) UIGestureRecognizer *notationsGesture;
@@ -171,7 +190,7 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 	if (self.notationsGesture) [statusBar removeGestureRecognizer:self.notationsGesture];
 	if (enabled) {
 		if (gesture == 0) {
-			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(toggleNotesShown)];
+			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleNotesShown)];
 			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 2;
 			[statusBar addGestureRecognizer:self.notationsGesture];
 		} else if (gesture == 1) {
@@ -184,14 +203,43 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 %new
 - (void)longPressStatusBar:(UILongPressGestureRecognizer *)sender {
 	if (sender.state == UIGestureRecognizerStateBegan) {
-		[[NTSManager sharedInstance] toggleNotesShown];
+		[self toggleNotesShown];
 	}
+}
+
+%new
+- (void)toggleNotesShown {
+	CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), (CFStringRef)[NSString stringWithFormat:@"%@.togglenotes", bundleIdentifier], nil, nil, true);
 }
 
 %end
 
+%end
+
+// Show notes window only on SpringBoard
+static void toggleNotes(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+	if (![[[NSBundle mainBundle] bundleIdentifier] isEqual:@"com.apple.springboard"]) {
+		return;
+	}
+	[[NTSManager sharedInstance] toggleNotesShown];
+}
+
 %ctor {
-	viewsToUpdate = [NSMutableArray new];
-	updatePreferences();
-	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback) PreferencesChangedCallback, (CFStringRef)[NSString stringWithFormat:@"%@.prefsupdate", bundleIdentifier], NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+ 	NSArray *args = [[NSProcessInfo processInfo] arguments];
+ 	if (args != nil && args.count != 0) {
+ 		NSString *execPath = args[0];
+ 		BOOL isSpringBoard = [[execPath lastPathComponent] isEqualToString:@"SpringBoard"];
+ 		BOOL isApplication = [execPath rangeOfString:@"/Application"].location != NSNotFound;
+		if (isSpringBoard || isApplication) {
+			if (%c(UIStatusBarManager)) {
+				%init(iOS13StatusBar)
+			}
+			%init;
+			viewsToUpdate = [NSMutableArray new];
+			updatePreferences();
+			CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback) PreferencesChangedCallback, (CFStringRef)[NSString stringWithFormat:@"%@.prefsupdate", bundleIdentifier], NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+			CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, toggleNotes, (CFStringRef)[NSString stringWithFormat:@"%@.togglenotes", bundleIdentifier], NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+
+		}
+	} 
 }
