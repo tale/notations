@@ -16,6 +16,11 @@
 }
 
 - (void)setHidden:(BOOL)hidden {
+	if (self.subviews.count == 0) {
+		[self addSubview:[NTSManager sharedInstance].notesView];
+		[NTSManager sharedInstance].notesView.hidden = NO;
+	}
+	
 	if (!hidden) {
 		[NTSManager sharedInstance].notesView.alpha = 0;
 		[super setHidden:hidden];
