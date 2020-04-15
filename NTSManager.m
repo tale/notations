@@ -30,6 +30,9 @@
 
 		UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(createNote:)];
 		[self.notesView addGestureRecognizer:pressRecognizer];
+
+		UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideNotes)];
+		[self.notesView addGestureRecognizer:tapRecognizer];
 	}
 	if (!self.window) {
 		self.window = [[NTSWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
