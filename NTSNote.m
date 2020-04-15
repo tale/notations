@@ -125,7 +125,7 @@
 
 
 - (void)deleteNote {
-	if (!self.draggable) {
+	if (self.draggable) {
 		[[NTSManager sharedInstance] removeNote:self];
 	}
 }
