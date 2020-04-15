@@ -125,7 +125,9 @@
 
 
 - (void)deleteNote {
-	[[NTSManager sharedInstance] removeNote:self];
+	if (!self.draggable) {
+		[[NTSManager sharedInstance] removeNote:self];
+	}
 }
 
 - (void)saveNote {
