@@ -14,13 +14,6 @@
 	return self;
 }
 
-- (NSArray *)specifiers {
-	if (!_specifiers) {
-		_specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
-	}
-	return _specifiers;
-}
-
 - (NSBundle *)resourceBundle {
 	return [NSBundle bundleWithPath:@"/Library/PreferenceBundles/NotationsPrefs.bundle"];
 }
