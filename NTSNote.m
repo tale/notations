@@ -26,8 +26,8 @@
 - (void)encodeWithCoder:(NSCoder *)encoder {
 	[encoder encodeObject:self.text forKey:@"noteText"];
 
-	[encoder encodeInteger:self.x forKey:@"x"];
-	[encoder encodeInteger:self.y forKey:@"y"];
+	[encoder encodeInteger:self.view.frame.origin.x forKey:@"x"];
+	[encoder encodeInteger:self.view.frame.origin.y forKey:@"y"];
 	[encoder encodeInteger:self.width forKey:@"width"];
 	[encoder encodeInteger:self.height forKey:@"height"];
 
@@ -114,12 +114,15 @@
 - (void)disableActions {
 	if (self.draggable) {
 		self.draggable = NO;
+		self.resizeable = NO;
 		[self.view.lockButton setImage:[[UIImage alloc] initWithContentsOfFile:@"/Library/Application Support/Notations/locked.png"] forState:UIControlStateNormal];
+		[self.view hideGrabbers];
 	} else {
 		self.draggable = YES;
+		self.resizeable = NO;
 		[self.view.lockButton setImage:[[UIImage alloc] initWithContentsOfFile:@"/Library/Application Support/Notations/unlocked.png"] forState:UIControlStateNormal];
+		[self.view showGrabbers];
 	}
-
 	[self saveNote];
 }
 
