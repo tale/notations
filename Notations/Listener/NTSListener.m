@@ -1,5 +1,5 @@
 #import "NTSListener.h"
-#import "NTSManager.h"
+#import "../Manager/NTSManager.h"
 
 @implementation NTSListener
 

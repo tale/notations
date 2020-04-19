@@ -6,9 +6,10 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = Notations
 
-Notations_FILES = Tweak.x $(wildcard *.m)
-Notations_CFLAGS = -fobjc-arc -Wno-deprecated-declarations -Wno-unguarded-availability-new
+Notations_FILES = Tweak.x $(wildcard Notations/*/*.m)  $(wildcard Notations/*/*/*.m) 
+Notations_CFLAGS = -fobjc-arc -IHeaders -Wno-deprecated-declarations -Wno-unguarded-availability-new
 
 include $(THEOS_MAKE_PATH)/tweak.mk
+
 SUBPROJECTS += preferences
 include $(THEOS_MAKE_PATH)/aggregate.mk

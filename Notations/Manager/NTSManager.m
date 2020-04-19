@@ -1,7 +1,7 @@
 #import "NTSManager.h"
-#import "NTSNote.h"
-#import "NTSNoteView.h"
-#import "NTSWindow.h"
+#import "../Objects/NTSNote.h"
+#import "../UI/Notes/NTSNoteView.h"
+#import "../UI/Window/NTSWindow.h"
 
 @implementation NTSManager
 
@@ -22,20 +22,11 @@
 }
 
 - (void)loadView {
-	if (!self.notesView) {
-		self.notesView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height + 50)];
-		self.notesView.hidden = YES;
-		self.notesView.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.4];
-		self.notesView.userInteractionEnabled = YES;
-
-		UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(createNote:)];
-		[self.notesView addGestureRecognizer:pressRecognizer];
-
-		UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideNotes)];
-		[self.notesView addGestureRecognizer:tapRecognizer];
-	}
 	if (!self.window) {
 		self.window = [[NTSWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+	}
+	if (!self.notesView) {
+		self.notesView = self.window.rootViewController.view;
 	}
 }
 
@@ -81,24 +72,7 @@
 
 - (void)updateNotes {
 	if (self.notes.count == 0) {
-		if (!self.addLabel) {
-			self.addLabel = [[UILabel alloc] init];
-			self.addLabel.alpha = 0;
-			self.addLabel.text = @"Long press to add a note";
-			self.addLabel.textColor = [UIColor whiteColor];
-			[self.addLabel sizeToFit];
-			self.addLabel.frame = CGRectMake(self.notesView.bounds.size.width / 2 - self.addLabel.bounds.size.width / 2, self.notesView.bounds.size.height / 2 - self.addLabel.bounds.size.height / 2, self.addLabel.bounds.size.width, self.addLabel.bounds.size.height);
-			[self.notesView addSubview:self.addLabel];
-		}
-		[UIView animateWithDuration:0.3 animations:^{
-			self.addLabel.alpha = 1;
-		} completion:nil];
 	} else {
-		if (self.addLabel && self.addLabel.alpha > 0) {
-			[UIView animateWithDuration:0.3 animations:^{
-				self.addLabel.alpha = 0;
-			} completion:nil];
-		}
 		for (NTSNote *note in self.notes) {
 			[note setupView];
 			[note.view removeFromSuperview];
@@ -139,9 +113,8 @@
 	}
 	[self updateNotes];
 
-	self.window.windowLevel = UIWindowLevelStatusBar + 100.0;
+	self.window.windowLevel = UIWindowLevelStatusBar + 99.0;
 	self.window.hidden = NO;
-
 	self.windowVisible = YES;
 	
 	for (NTSNote *note in self.notes) {

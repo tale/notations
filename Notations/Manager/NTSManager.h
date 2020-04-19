@@ -1,11 +1,10 @@
 #import <UIKit/UIKit.h>
 
-@class NTSNote, NTSWindow;
+@class NTSNote, NTSWindow, NTSNotesView;
 
 @interface NTSManager : NSObject
 
 @property (nonatomic, retain) UIView *notesView;
-@property (nonatomic, retain) UILabel *addLabel;
 @property (nonatomic, retain) NSMutableArray<NTSNote *> *notes;
 @property (nonatomic, retain) NTSWindow *window;
 @property (nonatomic) BOOL windowVisible;

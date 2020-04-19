@@ -1,6 +1,6 @@
 #import "NTSNote.h"
-#import "NTSManager.h"
-#import "NTSNoteView.h"
+#import "../Manager/NTSManager.h"
+#import "../UI/Notes/NTSNoteView.h"
 
 @implementation NTSNote
 

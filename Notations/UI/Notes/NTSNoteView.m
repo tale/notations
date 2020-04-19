@@ -1,6 +1,6 @@
 #import "NTSNoteView.h"
-#import "NTSManager.h"
-#import "Tweak.h"
+#import "../../Manager/NTSManager.h"
+#import "../../../Tweak.h"
 
 @implementation NTSNoteView
 
@@ -62,8 +62,8 @@
 		[self.deleteButton.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-15].active = YES;
 
 		// Text view
-		self.textView = [[UITextView alloc] initWithFrame:CGRectMake(10, 50, frame.size.width - 20, frame.size.height - 60)];
-
+		self.textView = [[UITextView alloc] initWithFrame:CGRectMake(20, 50, frame.size.width - 20, frame.size.height - 50)];
+		self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		self.textView.backgroundColor = [UIColor clearColor];
 		self.textView.font = [UIFont systemFontOfSize:[NTSManager sharedInstance].textSize];
 
@@ -81,10 +81,10 @@
 
 		[self addSubview:self.textView];
 
+		// Resizing grabbers
 		self.resizingViewsContainer = [[UIView alloc] initWithFrame:self.bounds];
 		[self insertSubview:self.resizingViewsContainer atIndex:0];
 
-		// Resizing grabbers
 		UIView *bottomGrabber = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 5)];
 		bottomGrabber.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.8];
 		bottomGrabber.clipsToBounds = YES;
@@ -205,12 +205,12 @@
 	if (!hidden) {
 		self.transform = CGAffineTransformMakeScale(0, 0);
 		[super setHidden:hidden];
-		[UIView animateWithDuration:0.3 animations:^{
+		[UIView animateWithDuration:0.2 animations:^{
 			self.transform = CGAffineTransformMakeScale(1, 1);
 		} completion:nil];
 	} else {
 		self.transform = CGAffineTransformMakeScale(1, 1);
-		[UIView animateWithDuration:0.3 animations:^{
+		[UIView animateWithDuration:0.2 animations:^{
 			self.transform = CGAffineTransformMakeScale(0.01, 0.01); // Not possible to animate scale to 0
 		} completion:^(BOOL finished) {
 			[super setHidden:hidden];
@@ -220,13 +220,13 @@
 }
 
 - (void)hideGrabbers {
-	[UIView animateWithDuration:0.3 animations:^{
+	[UIView animateWithDuration:0.2 animations:^{
 		self.resizingViewsContainer.alpha = 0;
 	} completion:nil];
 }
 
 - (void)showGrabbers {
-	[UIView animateWithDuration:0.3 animations:^{
+	[UIView animateWithDuration:0.2 animations:^{
 		self.resizingViewsContainer.alpha = 1;
 	} completion:nil];
 }

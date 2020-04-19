@@ -1,8 +1,8 @@
 #import "Tweak.h"
-#import "NTSManager.h"
-#import "NTSNote.h"
-#import "NTSWindow.h"
-#import "NTSListener.h"
+#import "Notations/Manager/NTSManager.h"
+#import "Notations/Objects/NTSNote.h"
+#import "Notations/UI/Window/NTSWindow.h"
+#import "Notations/Listener/NTSListener.h"
 
 static NSString *bundleIdentifier = @"dev.renaitare.notations";
 
