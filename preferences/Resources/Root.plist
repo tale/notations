@@ -26,13 +26,13 @@
 			<key>default</key>
 			<true/>
 			<key>defaults</key>
-			<string>dev.renaitare.notations</string>
+			<string>me.renai.notations</string>
 			<key>key</key>
 			<string>enabled</string>
 			<key>label</key>
 			<string>Enabled</string>
 			<key>PostNotification</key>
-			<string>dev.renaitare.notations.prefsupdate</string>
+			<string>me.renai.notations.prefsupdate</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -42,9 +42,9 @@
 			<key>default</key>
 			<integer>0</integer>
 			<key>defaults</key>
-			<string>dev.renaitare.notations</string>
+			<string>me.renai.notations</string>
 			<key>PostNotification</key>
-			<string>dev.renaitare.notations.prefsupdate</string>
+			<string>me.renai.notations.prefsupdate</string>
 			<key>key</key>
 			<string>style</string>
 			<key>label</key>
@@ -70,9 +70,9 @@
 			<key>default</key>
 			<integer>0</integer>
 			<key>defaults</key>
-			<string>dev.renaitare.notations</string>
+			<string>me.renai.notations</string>
 			<key>PostNotification</key>
-			<string>dev.renaitare.notations.prefsupdate</string>
+			<string>me.renai.notations.prefsupdate</string>
 			<key>key</key>
 			<string>gesture</string>
 			<key>label</key>
@@ -102,9 +102,9 @@
 			<key>default</key>
 			<integer>0</integer>
 			<key>defaults</key>
-			<string>dev.renaitare.notations</string>
+			<string>me.renai.notations</string>
 			<key>PostNotification</key>
-			<string>dev.renaitare.notations.prefsupdate</string>
+			<string>me.renai.notations.prefsupdate</string>
 			<key>key</key>
 			<string>textAlignment</string>
 			<key>label</key>
@@ -132,9 +132,9 @@
 			<key>default</key>
 			<false/>
 			<key>defaults</key>
-			<string>dev.renaitare.notations</string>
+			<string>me.renai.notations</string>
 			<key>PostNotification</key>
-			<string>dev.renaitare.notations.prefsupdate</string>
+			<string>me.renai.notations.prefsupdate</string>
 			<key>key</key>
 			<string>useCustomTextSize</string>
 			<key>label</key>
@@ -144,9 +144,9 @@
 			<key>cell</key>
 			<string>PSSliderCell</string>
 			<key>defaults</key>
-			<string>dev.renaitare.notations</string>
+			<string>me.renai.notations</string>
 			<key>PostNotification</key>
-			<string>dev.renaitare.notations.prefsupdate</string>
+			<string>me.renai.notations.prefsupdate</string>
 			<key>showValue</key>
 			<true/>
 			<key>default</key>
@@ -171,21 +171,21 @@
 			<string>Links</string>
 		</dict>
 		<dict>
-			<key>cell</key> 					
+			<key>cell</key>
 			<string>PSButtonCell</string>
-			<key>action</key> 					
+			<key>action</key>
 			<string>submitIssue</string>
-			<key>label</key> 					
+			<key>label</key>
 			<string>Report Issues</string>
 			<key>icon</key>
 			<string>/Library/PreferenceBundles/NotationsPrefs.bundle/bug.png</string>
 		</dict>
 		<dict>
-			<key>cell</key> 					
+			<key>cell</key>
 			<string>PSButtonCell</string>
-			<key>action</key> 					
+			<key>action</key>
 			<string>donate</string>
-			<key>label</key> 					
+			<key>label</key>
 			<string>Donate / Support Me</string>
 			<key>icon</key>
 			<string>/Library/PreferenceBundles/NotationsPrefs.bundle/donate.png</string>
@@ -237,11 +237,11 @@
 			<string>Teacher</string>
 		</dict>
 		<dict>
-			<key>cell</key> 					
+			<key>cell</key>
 			<string>PSGroupCell</string>
-			<key>footerText</key> 				
+			<key>footerText</key>
 			<string>Made with ❤️ by Renaitare</string>
-			<key>footerAlignment</key> 			
+			<key>footerAlignment</key>
 			<string>1</string>
 		</dict>
 	</array>

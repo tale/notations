@@ -4,7 +4,7 @@
 #import "Notations/UI/Window/NTSWindow.h"
 #import "Notations/Listener/NTSListener.h"
 
-static NSString *bundleIdentifier = @"dev.renaitare.notations";
+static NSString *bundleIdentifier = @"me.renai.notations";
 
 static NSMutableDictionary *preferences;
 static BOOL enabled;
@@ -245,9 +245,9 @@ static void toggleNotes(CFNotificationCenterRef center, void *observer, CFString
 				dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
 				id la = %c(LAActivator);
 				if (la) {
-					[[la sharedInstance] registerListener:[NTSListener new] forName:@"dev.renaitare.notations.togglenotes"];
+					[[la sharedInstance] registerListener:[NTSListener new] forName:@"me.renai.notations.togglenotes"];
 				}
 			}
 		}
-	} 
+	}
 }
