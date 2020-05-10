@@ -7,9 +7,9 @@
 	<key>subtitle</key>
 	<string>Sticky Notes for iOS</string>
 	<key>headerColor</key>
-	<string>#ff2d55</string>
+	<string>#eb4f34</string>
 	<key>headerFontPath</key>
-	<string>/Library/Application Support/Notations/Inconsolata-Bold.ttf</string>
+	<string>/Library/Application Support/Notations/Cascadia.ttf</string>
 	<key>textColor</key>
 	<string>#ffffff</string>
 	<key>items</key>

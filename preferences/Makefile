@@ -1,6 +1,6 @@
 include $(THEOS)/makefiles/common.mk
 
-TARGET = iphone:clang::12.0
+TARGET = iphone:clang::
 ARCHS = arm64 arm64e
 
 BUNDLE_NAME = NotationsPrefs
