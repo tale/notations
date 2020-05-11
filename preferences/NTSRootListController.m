@@ -19,7 +19,7 @@
 }
 
 - (void)submitIssue {
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/tale/notations/issues/new"] options:@{} completionHandler:nil];
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/Renaitare/Notations/issues/new"] options:@{} completionHandler:nil];
 }
 
 - (void)donate {

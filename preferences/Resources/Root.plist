@@ -204,7 +204,7 @@
 			<key>twitter</key>
 			<string>Renaitare</string>
 			<key>subtitle</key>
-			<string>Lead Developer</string>
+			<string>Developer</string>
 		</dict>
 		<dict>
 			<key>cellClass</key>
@@ -214,7 +214,7 @@
 			<key>twitter</key>
 			<string>Skittyblock</string>
 			<key>subtitle</key>
-			<string>Developer</string>
+			<string>Contributor</string>
 		</dict>
 		<dict>
 			<key>cellClass</key>
@@ -225,16 +225,6 @@
 			<string>thatmirac</string>
 			<key>subtitle</key>
 			<string>Icon Designer</string>
-		</dict>
-		<dict>
-			<key>cellClass</key>
-			<string>SPCreditCell</string>
-			<key>label</key>
-			<string>ConorTheDev</string>
-			<key>twitter</key>
-			<string>ConorTheDev</string>
-			<key>subtitle</key>
-			<string>Teacher</string>
 		</dict>
 		<dict>
 			<key>cell</key>
