@@ -47,19 +47,20 @@
 	[note willHideView];
 	[self.notes removeObject:note];
 
-	NTSPopupView *undoPopup = [[NTSPopupView alloc] initWithFrame:CGRectMake(40, self.window.frame.size.height - 100, self.window.frame.size.width - 80, 60) withNote:note];
-	undoPopup.alpha = 0.0;
-	[self.notesView addSubview:undoPopup];
+	// NTSPopupView *undoPopup = [[NTSPopupView alloc] initWithFrame:CGRectMake(40, self.window.frame.size.height - 100, self.window.frame.size.width - 80, 60) withNote:note];
+	// undoPopup.alpha = 0.0;
+	// [self.notesView addSubview:undoPopup];
+	// [self.notesView bringSubviewToFront:undoPopup];
 
-	[UIView animateWithDuration:0.3f delay:0.5f options:UIViewAnimationOptionCurveEaseOut animations:^{
-		undoPopup.alpha = 1.0;
-	} completion:^(BOOL finished) {
-		[UIView animateWithDuration:0.3f delay:5.0f options:0 animations:^{
-		undoPopup.alpha = 0.0;
-	} completion:^(BOOL finished) {
-		[undoPopup removeFromSuperview];
-	}];
-	}];
+	// [UIView animateWithDuration:0.3f delay:0.5f options:UIViewAnimationOptionCurveEaseOut animations:^{
+	// 	undoPopup.alpha = 1.0;
+	// } completion:^(BOOL finished) {
+	// 	[UIView animateWithDuration:0.3f delay:5.0f options:0 animations:^{
+	// 	undoPopup.alpha = 0.0;
+	// } completion:^(BOOL finished) {
+	// 	[undoPopup removeFromSuperview];
+	// }];
+	// }];
 
 	[[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:self.notes] forKey:@"notations_notes"];
 	[[NSUserDefaults standardUserDefaults] synchronize];

@@ -116,12 +116,12 @@
 		self.draggable = NO;
 		self.resizeable = NO;
 		[self.view.lockButton setImage:[[UIImage alloc] initWithContentsOfFile:@"/Library/Application Support/Notations/locked.png"] forState:UIControlStateNormal];
-		[self.view hideGrabbers];
+		[self.view lockNote];
 	} else {
 		self.draggable = YES;
 		self.resizeable = NO;
 		[self.view.lockButton setImage:[[UIImage alloc] initWithContentsOfFile:@"/Library/Application Support/Notations/unlocked.png"] forState:UIControlStateNormal];
-		[self.view showGrabbers];
+		[self.view unlockNote];
 	}
 	[self saveNote];
 }
