@@ -38,10 +38,18 @@
 
 - (void)setupView {
 	if (!self.presented) {
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow) name:UIKeyboardDidShowNotification object:nil];
+
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide) name:UIKeyboardDidHideNotification object:nil];
+
 		self.view = [[NTSNoteView alloc] initWithFrame:CGRectMake(self.x, self.y, self.width, self.height)];
+		self.view.translatesAutoresizingMaskIntoConstraints = YES;
 
 		[self.view.lockButton addTarget:self action:@selector(disableActions) forControlEvents:UIControlEventTouchUpInside];
 		[self.view.deleteButton addTarget:self action:@selector(deleteNote) forControlEvents:UIControlEventTouchUpInside];
+
+		UIPanGestureRecognizer *dragResize = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(resizeView:)];
+		[self.view.resizeGrabber addGestureRecognizer:dragResize];
 
 		UIPanGestureRecognizer *dragGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(dragView:)];
 		[self.view addGestureRecognizer:dragGesture];
@@ -97,16 +105,32 @@
 				finalY = self.view.superview.frame.size.height;
 			}
 
-			[UIView beginAnimations:nil context:NULL];
-			[UIView setAnimationDuration:(ABS(velocityX) * 0.0002) + 0.2];
-			[UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
-			[UIView setAnimationDelegate:self.view];
-			[UIView setAnimationDidStopSelector:@selector(animationDidFinish)];
-
-			[[gesture view] setCenter:CGPointMake(finalX, finalY)];
-			[UIView commitAnimations];
+			[UIView animateWithDuration:ABS(velocityX) * 0.0002 + 0.2 animations:^{
+				[[gesture view] setCenter:CGPointMake(finalX, finalY)];
+			}];
 		}
 	}
+
+	[self saveNote];
+}
+
+- (void)resizeView:(UIPanGestureRecognizer *)gesture {
+	CGPoint translatedPoint = [gesture translationInView:gesture.view];
+	[gesture setTranslation:CGPointZero inView:gesture.view];
+
+	CGFloat x = self.view.frame.origin.x;
+	CGFloat y = self.view.frame.origin.y;
+	CGFloat width = self.view.frame.size.width;
+	CGFloat height = self.view.frame.size.height;
+
+	CGFloat minHeight = 200;
+	CGFloat minWidth = 200;
+
+	if (height + translatedPoint.y <= minHeight) height = minHeight - translatedPoint.y;
+	if (width+translatedPoint.x <= minWidth) width = minWidth - translatedPoint.x;
+	self.view.frame = CGRectMake(x, y, width + translatedPoint.x, height + translatedPoint.y);
+	self.width = width + translatedPoint.x;
+	self.height = height + translatedPoint.y;
 
 	[self saveNote];
 }
@@ -154,6 +178,32 @@
 
 - (void)willHideView {
 	self.view.hidden = YES;
+}
+
+- (void)keyboardDidShow {
+	self.cachedX = (int) self.x;
+	self.cachedY = (int) self.y;
+
+	self.x = 20;
+	self.y = 20;
+
+	[UIView animateWithDuration:0.25 animations:^{
+		self.view.frame = CGRectMake(self.x, self.y, self.view.frame.size.width, self.view.frame.size.height);
+	}];
+	[self saveNote];
+}
+
+- (void)keyboardDidHide {
+	self.x = self.cachedX;
+	self.y = self.cachedY;
+
+	self.cachedY = 0;
+	self.cachedY = 0;
+
+	[UIView animateWithDuration:0.25 animations:^{
+		self.view.frame = CGRectMake(self.x, self.y, self.view.frame.size.width, self.view.frame.size.height);
+	}];
+	[self saveNote];
 }
 
 @end

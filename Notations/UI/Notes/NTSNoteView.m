@@ -76,9 +76,6 @@
 		[self.resizeGrabber.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:5].active = YES;
 		[self.resizeGrabber.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:5].active = YES;
 
-		UIPanGestureRecognizer *dragResize = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(resizeView:)];
-		[self.resizeGrabber addGestureRecognizer:dragResize];
-
 		// Text view
 		self.textView = [[UITextView alloc] initWithFrame:CGRectMake(20, 50, self.frame.size.width - 20, self.frame.size.height - 80)];
 		self.textView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
