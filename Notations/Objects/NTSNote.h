@@ -1,4 +1,5 @@
 #import <UIKit/UIKit.h>
+#import <Foundation/NSCoder.h>
 
 @class NTSNoteView;
 
@@ -6,10 +7,8 @@
 
 @property (nonatomic, retain) NTSNoteView *view;
 @property (nonatomic, retain) NSString *text;
-@property (nonatomic) NSInteger x;
-@property (nonatomic) NSInteger y;
-@property (nonatomic) NSInteger cachedX;
-@property (nonatomic) NSInteger cachedY;
+@property (nonatomic) CGPoint center;
+@property (nonatomic) CGPoint centerCache;
 @property (nonatomic) NSInteger width;
 @property (nonatomic) NSInteger height;
 @property (nonatomic) BOOL draggable;
@@ -22,7 +21,7 @@
 - (void)willShowView;
 - (void)willHideView;
 - (void)didShowView;
-- (void)keyboardDidShow;
-- (void)keyboardDidHide;
+// - (void)keyboardDidShow;
+// - (void)keyboardDidHide;
 
 @end

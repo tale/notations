@@ -1,7 +1,6 @@
 #import "NTSManager.h"
 #import "../Objects/NTSNote.h"
 #import "../UI/Notes/NTSNoteView.h"
-#import "../UI/Window/NTSPopupView.h"
 #import "../UI/Window/NTSWindow.h"
 
 @implementation NTSManager
@@ -47,21 +46,6 @@
 	[note willHideView];
 	[self.notes removeObject:note];
 
-	// NTSPopupView *undoPopup = [[NTSPopupView alloc] initWithFrame:CGRectMake(40, self.window.frame.size.height - 100, self.window.frame.size.width - 80, 60) withNote:note];
-	// undoPopup.alpha = 0.0;
-	// [self.notesView addSubview:undoPopup];
-	// [self.notesView bringSubviewToFront:undoPopup];
-
-	// [UIView animateWithDuration:0.3f delay:0.5f options:UIViewAnimationOptionCurveEaseOut animations:^{
-	// 	undoPopup.alpha = 1.0;
-	// } completion:^(BOOL finished) {
-	// 	[UIView animateWithDuration:0.3f delay:5.0f options:0 animations:^{
-	// 	undoPopup.alpha = 0.0;
-	// } completion:^(BOOL finished) {
-	// 	[undoPopup removeFromSuperview];
-	// }];
-	// }];
-
 	[[NSUserDefaults standardUserDefaults] setObject:[NSKeyedArchiver archivedDataWithRootObject:self.notes] forKey:@"notations_notes"];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 
@@ -105,8 +89,7 @@
 			CGPoint position = [sender locationInView:self.notesView];
 			NTSNote *note = [[NTSNote alloc] init];
 			note.text = @"";
-			note.x = position.x - 100;
-			note.y = position.y - 100;
+			note.center = CGPointMake(position.x, position.y);
 			note.width = 200;
 			note.height = 200;
 			note.draggable = YES;

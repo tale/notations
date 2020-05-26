@@ -10,8 +10,7 @@
 	if (self) {
 		self.text = [decoder decodeObjectForKey:@"noteText"];
 
-		self.x = [decoder decodeIntegerForKey:@"x"];
-		self.y = [decoder decodeIntegerForKey:@"y"];
+		self.center = CGPointFromString([decoder decodeObjectForKey:@"center"]);
 		self.width = [decoder decodeIntegerForKey:@"width"];
 		self.height = [decoder decodeIntegerForKey:@"height"];
 
@@ -26,8 +25,7 @@
 - (void)encodeWithCoder:(NSCoder *)encoder {
 	[encoder encodeObject:self.text forKey:@"noteText"];
 
-	[encoder encodeInteger:self.view.frame.origin.x forKey:@"x"];
-	[encoder encodeInteger:self.view.frame.origin.y forKey:@"y"];
+	[encoder encodeObject:NSStringFromCGPoint(self.view.center) forKey:@"center"];
 	[encoder encodeInteger:self.width forKey:@"width"];
 	[encoder encodeInteger:self.height forKey:@"height"];
 
@@ -38,12 +36,30 @@
 
 - (void)setupView {
 	if (!self.presented) {
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow) name:UIKeyboardDidShowNotification object:nil];
+		// [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow) name:UIKeyboardDidShowNotification object:nil];
 
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide) name:UIKeyboardDidHideNotification object:nil];
+		// [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide) name:UIKeyboardDidHideNotification object:nil];
 
-		self.view = [[NTSNoteView alloc] initWithFrame:CGRectMake(self.x, self.y, self.width, self.height)];
+		self.view = [[NTSNoteView alloc] initWithFrame:CGRectMake(0, 0, self.width, self.height)];
 		self.view.translatesAutoresizingMaskIntoConstraints = YES;
+
+		CGFloat finalX = self.view.center.x;
+		CGFloat finalY = self.view.center.y;
+
+		if (finalX < self.width / 2 + 10) {
+			finalX = self.width / 2 + self.center.x - 100;
+		} else if (finalX > self.view.superview.frame.size.width - self.width / 2 - 25) {
+			finalX = self.view.superview.frame.size.width - self.width / 2 - self.center.x - 100;
+		}
+
+		if (finalY < self.height / 2 + 10) {
+			finalY = self.height / 2 + self.center.y - 100;
+		} else if (finalY > self.view.superview.frame.size.height - self.height / 2 - 25) {
+			finalY = self.view.superview.frame.size.height - self.height / 2 - self.center.y - 100;
+		}
+
+		self.center = CGPointMake(finalX, finalY);
+		self.view.center = self.center;
 
 		[self.view.lockButton addTarget:self action:@selector(disableActions) forControlEvents:UIControlEventTouchUpInside];
 		[self.view.deleteButton addTarget:self action:@selector(deleteNote) forControlEvents:UIControlEventTouchUpInside];
@@ -93,16 +109,16 @@
 			CGFloat finalX = translatedPoint.x + velocityX;
 			CGFloat finalY = translatedPoint.y + velocityY;
 
-			if (finalX < 0) {
-				finalX = 0;
-			} else if (finalX > self.view.superview.frame.size.width) {
-				finalX = self.view.superview.frame.size.width;
+			if (finalX < self.width / 2 + 10) {
+				finalX = self.width / 2 + 10;
+			} else if (finalX > self.view.superview.frame.size.width - self.width / 2 - 25) {
+				finalX = self.view.superview.frame.size.width - self.width / 2 - 25;
 			}
 
-			if (finalY < 50) {
-				finalY = 50;
-			} else if (finalY > self.view.superview.frame.size.height) {
-				finalY = self.view.superview.frame.size.height;
+			if (finalY < self.height / 2 + 10) {
+				finalY = self.height / 2 + 10;
+			} else if (finalY > self.view.superview.frame.size.height - self.height / 2 - 25) {
+				finalY = self.view.superview.frame.size.height - self.height / 2 - 25;
 			}
 
 			[UIView animateWithDuration:ABS(velocityX) * 0.0002 + 0.2 animations:^{
@@ -126,8 +142,15 @@
 	CGFloat minHeight = 200;
 	CGFloat minWidth = 200;
 
+	CGFloat maxHeight = self.view.superview.frame.size.height - 35;
+	CGFloat maxWidth = self.view.superview.frame.size.width - 35;
+
 	if (height + translatedPoint.y <= minHeight) height = minHeight - translatedPoint.y;
-	if (width+translatedPoint.x <= minWidth) width = minWidth - translatedPoint.x;
+	if (width + translatedPoint.x <= minWidth) width = minWidth - translatedPoint.x;
+
+	if (height + translatedPoint.y >= maxHeight) height = maxHeight - translatedPoint.y;
+	if (width + translatedPoint.x >= maxWidth) width = maxWidth - translatedPoint.x;
+
 	self.view.frame = CGRectMake(x, y, width + translatedPoint.x, height + translatedPoint.y);
 	self.width = width + translatedPoint.x;
 	self.height = height + translatedPoint.y;
@@ -180,30 +203,30 @@
 	self.view.hidden = YES;
 }
 
-- (void)keyboardDidShow {
-	self.cachedX = (int) self.x;
-	self.cachedY = (int) self.y;
+// - (void)keyboardDidShow {
+// 	self.cachedX = (int) self.x;
+// 	self.cachedY = (int) self.y;
 
-	self.x = 20;
-	self.y = 20;
+// 	self.x = 20;
+// 	self.y = 20;
 
-	[UIView animateWithDuration:0.25 animations:^{
-		self.view.frame = CGRectMake(self.x, self.y, self.view.frame.size.width, self.view.frame.size.height);
-	}];
-	[self saveNote];
-}
+// 	[UIView animateWithDuration:0.25 animations:^{
+// 		self.view.frame = CGRectMake(self.x, self.y, self.view.frame.size.width, self.view.frame.size.height);
+// 	}];
+// 	[self saveNote];
+// }
 
-- (void)keyboardDidHide {
-	self.x = self.cachedX;
-	self.y = self.cachedY;
+// - (void)keyboardDidHide {
+// 	self.x = self.cachedX;
+// 	self.y = self.cachedY;
 
-	self.cachedY = 0;
-	self.cachedY = 0;
+// 	self.cachedY = 0;
+// 	self.cachedY = 0;
 
-	[UIView animateWithDuration:0.25 animations:^{
-		self.view.frame = CGRectMake(self.x, self.y, self.view.frame.size.width, self.view.frame.size.height);
-	}];
-	[self saveNote];
-}
+// 	[UIView animateWithDuration:0.25 animations:^{
+// 		self.view.frame = CGRectMake(self.x, self.y, self.view.frame.size.width, self.view.frame.size.height);
+// 	}];
+// 	[self saveNote];
+// }
 
 @end
