@@ -1,36 +1,31 @@
-#import "NTSRootListController.h"
-#import "Settings.h"
+#include "NTSRootListController.h"
 
 @implementation NTSRootListController
 
-- (instancetype)init {
+-  (instancetype)init {
 	self = [super init];
 
 	if (self) {
-		self.respringButton = [[UIBarButtonItem alloc] initWithTitle:@"Respring" style:UIBarButtonItemStylePlain target:self action:@selector(respring)];
-		self.navigationItem.rightBarButtonItem = self.respringButton;
+		self.toggle = [[UISwitch alloc] initWithFrame:CGRectMake(0, 0, 51, 31)];
+		[self.toggle setOn:YES animated:YES];
+		[self.toggle addTarget:self action:@selector(toggleState) forControlEvents:UIControlEventValueChanged];
+		self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.toggle];
 	}
 
 	return self;
 }
 
-- (NSBundle *)resourceBundle {
-	return [NSBundle bundleWithPath:@"/Library/PreferenceBundles/NotationsPrefs.bundle"];
+- (void)toggleState {
+	[[NSUserDefaults standardUserDefaults] setBool:self.toggle forKey:@"notations_enabled"];
+	  	CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), (__bridge CFStringRef)@"me.renai.notations.prefsupdate", NULL, NULL, YES);
 }
 
-- (void)submitIssue {
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/Renaitare/Notations/issues/new"] options:@{} completionHandler:nil];
-}
+- (NSArray *)specifiers {
+	if (!_specifiers) {
+		_specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
+	}
 
-- (void)donate {
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://ko-fi.com/renai"] options:@{} completionHandler:nil];
-}
-
-- (void)respring {
-	SBSRelaunchAction *restartAction = [NSClassFromString(@"SBSRelaunchAction") actionWithReason:@"RestartRenderServer" options:SBSRelaunchOptionsFadeToBlack targetURL:[NSURL URLWithString:@"prefs:root=Notations"]];
-	NSSet *actions = [NSSet setWithObject:restartAction];
-	FBSSystemService *frontBoardService = [NSClassFromString(@"FBSSystemService") sharedService];
-	[frontBoardService sendActions:actions withResult:nil];
+	return _specifiers;
 }
 
 @end

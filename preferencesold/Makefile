@@ -2,13 +2,14 @@ include $(THEOS)/makefiles/common.mk
 
 TARGET = iphone:clang::
 ARCHS = arm64 arm64e
+
 BUNDLE_NAME = NotationsPrefs
 
-NotationsPrefs_FILES = $(wildcard *.m)
+NotationsPrefs_FILES = $(wildcard *.m) $(wildcard SkittyPrefs/*.m)
 NotationsPrefs_INSTALL_PATH = /Library/PreferenceBundles
 NotationsPrefs_FRAMEWORKS = UIKit
 NotationsPrefs_PRIVATE_FRAMEWORKS = Preferences
-NotationsPrefs_CFLAGS = -fobjc-arc
+NotationsPrefs_CFLAGS = -fobjc-arc  -Wno-deprecated-declarations -Wno-unguarded-availability-new
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

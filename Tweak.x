@@ -25,7 +25,7 @@ static void updatePreferences() {
 		preferences = [[NSMutableDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", bundleIdentifier]];
 	}
 
-	enabled = [([preferences objectForKey:@"enabled"] ?: @(YES)) boolValue];
+	enabled = [([NSNumber numberWithInt:[[NSUserDefaults standardUserDefaults] boolForKey:@"notations_enabled"]] ?: @(YES)) boolValue];
 	gesture = [([preferences objectForKey:@"gesture"] ?: @(0)) integerValue];
 	[NTSManager sharedInstance].colorStyle = [([preferences objectForKey:@"style"] ?: @(0)) integerValue];
 	[NTSManager sharedInstance].useCustomTextSize = [([preferences objectForKey:@"useCustomTextSize"] ?: @(NO)) boolValue];

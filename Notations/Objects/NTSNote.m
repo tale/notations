@@ -36,9 +36,9 @@
 
 - (void)setupView {
 	if (!self.presented) {
-		// [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow) name:UIKeyboardDidShowNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
 
-		// [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide) name:UIKeyboardDidHideNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide) name:UIKeyboardDidHideNotification object:nil];
 
 		self.view = [[NTSNoteView alloc] initWithFrame:CGRectMake(0, 0, self.width, self.height)];
 		self.view.translatesAutoresizingMaskIntoConstraints = YES;
@@ -203,30 +203,32 @@
 	self.view.hidden = YES;
 }
 
-// - (void)keyboardDidShow {
-// 	self.cachedX = (int) self.x;
-// 	self.cachedY = (int) self.y;
+- (void)keyboardDidShow:(NSNotification *)notification {
+	NSInteger keyboardHeight = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
+	self.centerCache = self.center;
 
-// 	self.x = 20;
-// 	self.y = 20;
+	if ([[UIScreen mainScreen] bounds].size.height - self.center.y + self.height / 2 >= [[UIScreen mainScreen] bounds].size.height - keyboardHeight) {
+		NSLog(@"[NOTATIONS] WOWOWOWOW");
+		[UIView animateWithDuration:0.25 animations:^{
+			self.center = CGPointMake(self.center.x, [[UIScreen mainScreen] bounds].size.height - keyboardHeight - 300);
+			[self setupView];
+		}];
+	}
 
-// 	[UIView animateWithDuration:0.25 animations:^{
-// 		self.view.frame = CGRectMake(self.x, self.y, self.view.frame.size.width, self.view.frame.size.height);
-// 	}];
-// 	[self saveNote];
-// }
+	[self saveNote];
+}
 
-// - (void)keyboardDidHide {
-// 	self.x = self.cachedX;
-// 	self.y = self.cachedY;
+- (void)keyboardDidHide {
+	// self.x = self.cachedX;
+	// self.y = self.cachedY;
 
-// 	self.cachedY = 0;
-// 	self.cachedY = 0;
+	// self.cachedY = 0;
+	// self.cachedY = 0;
 
-// 	[UIView animateWithDuration:0.25 animations:^{
-// 		self.view.frame = CGRectMake(self.x, self.y, self.view.frame.size.width, self.view.frame.size.height);
-// 	}];
-// 	[self saveNote];
-// }
+	// [UIView animateWithDuration:0.25 animations:^{
+	// 	self.view.frame = CGRectMake(self.x, self.y, self.view.frame.size.width, self.view.frame.size.height);
+	// }];
+	// [self saveNote];
+}
 
 @end

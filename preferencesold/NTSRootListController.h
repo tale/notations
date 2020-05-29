@@ -2,6 +2,6 @@
 
 @interface NTSRootListController : PSListController
 
-@property (nonatomic, retain) UISwitch *toggle;
+@property (nonatomic, retain) UIBarButtonItem *respringButton;
 
 @end
