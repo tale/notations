@@ -1,13 +1,14 @@
-INSTALL_TARGET_PROCESSES = SpringBoard
 ARCHS = arm64 arm64e
-TARGET = iphone:clang::
+TARGET = iphone:clang::11.0
+
+INSTALL_TARGET_PROCESSES = SpringBoard
 
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = Notations
 
-Notations_FILES = Tweak.x $(wildcard Notations/*/*.m)  $(wildcard Notations/*/*/*.m)
-Notations_CFLAGS = -fobjc-arc -IHeaders -Wno-deprecated-declarations -Wno-unguarded-availability-new
+Notations_FILES = Notations.x $(wildcard src/*/*.m)
+Notations_CFLAGS = -fobjc-arc -IHeaders
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 

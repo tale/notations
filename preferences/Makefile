@@ -1,17 +1,15 @@
 include $(THEOS)/makefiles/common.mk
 
-TARGET = iphone:clang::
-ARCHS = arm64 arm64e
-BUNDLE_NAME = NotationsPrefs
+BUNDLE_NAME = prefs
 
-NotationsPrefs_FILES = $(wildcard *.m)
-NotationsPrefs_INSTALL_PATH = /Library/PreferenceBundles
-NotationsPrefs_FRAMEWORKS = UIKit
-NotationsPrefs_PRIVATE_FRAMEWORKS = Preferences
-NotationsPrefs_CFLAGS = -fobjc-arc
+prefs_FILES = $(wildcard *.m)
+prefs_INSTALL_PATH = /Library/PreferenceBundles
+prefs_FRAMEWORKS = UIKit
+prefs_PRIVATE_FRAMEWORKS = Preferences
+prefs_CFLAGS = -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 
 internal-stage::
 	$(ECHO_NOTHING)mkdir -p $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences$(ECHO_END)
-	$(ECHO_NOTHING)cp entry.plist $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences/NotationsPrefs.plist$(ECHO_END)
+	$(ECHO_NOTHING)cp entry.plist $(THEOS_STAGING_DIR)/Library/PreferenceLoader/Preferences/me.renai.notations.preferences.plist$(ECHO_END)
