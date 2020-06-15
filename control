@@ -1,7 +1,7 @@
 Package: me.renai.notations
 Name: Notations
 Depends: mobilesubstrate
-Version: 0.0.1
+Version: 1.0.0
 Architecture: iphoneos-arm
 Description: The "Sticky Notes" experience for iOS!
 Maintainer: Renaitare <support@renai.me>
