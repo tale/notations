@@ -18,7 +18,7 @@
 	if (![self.rootViewController isKindOfClass:[NTSNotesViewController class]]) {
 		self.rootViewController = [[NTSNotesViewController alloc] init];
 	}
-	
+
 	if (!hidden) {
 		[super setHidden:hidden];
 		[(NTSNotesViewController *)self.rootViewController present];

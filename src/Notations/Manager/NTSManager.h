@@ -9,7 +9,7 @@
 @property (nonatomic, retain) NTSWindow *window;
 @property (nonatomic) BOOL windowVisible;
 @property (nonatomic) BOOL enabled;
-@property (nonatomic) BOOL useCustomTextSize;
+@property (nonatomic) BOOL isCustomText;
 @property (nonatomic) NSInteger textSize;
 @property (nonatomic) NSInteger textAlignment;
 @property (nonatomic) NSInteger colorStyle;

@@ -29,7 +29,7 @@
 
 		self.blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
 		self.blurEffectView.layer.cornerRadius = 20;
-		self.blurEffectView.frame = CGRectMake(10, 10, self.bounds.size.width, self.bounds.size.height);
+		self.blurEffectView.frame = CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height);
 		self.blurEffectView.layer.masksToBounds = YES;
 		self.blurEffectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		[self addSubview:self.blurEffectView];
@@ -46,8 +46,8 @@
 
 		[self.lockButton.widthAnchor constraintEqualToConstant:30].active = YES;
 		[self.lockButton.heightAnchor constraintEqualToConstant:30].active = YES;
-		[self.lockButton.topAnchor constraintEqualToAnchor:self.topAnchor constant:15].active = YES;
-		[self.lockButton.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:15].active = YES;
+		[self.lockButton.topAnchor constraintEqualToAnchor:self.topAnchor constant:5].active = YES;
+		[self.lockButton.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:5].active = YES;
 
 		self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		self.deleteButton.backgroundColor = buttonColor;
@@ -58,8 +58,8 @@
 
 		[self.deleteButton.widthAnchor constraintEqualToConstant:30].active = YES;
 		[self.deleteButton.heightAnchor constraintEqualToConstant:30].active = YES;
-		[self.deleteButton.topAnchor constraintEqualToAnchor:self.topAnchor constant:15].active = YES;
-		[self.deleteButton.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:5].active = YES;
+		[self.deleteButton.topAnchor constraintEqualToAnchor:self.topAnchor constant:5].active = YES;
+		[self.deleteButton.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-5].active = YES;
 
 		self.resizeGrabber = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 15, 15)];
 		UIImageView *resizeImage = [[UIImageView alloc] initWithImage:[[UIImage alloc] initWithContentsOfFile:@"/Library/Application Support/Notations/resize.png"]];
@@ -73,8 +73,8 @@
 
 		[self.resizeGrabber.widthAnchor constraintEqualToConstant:30].active = YES;
 		[self.resizeGrabber.heightAnchor constraintEqualToConstant:30].active = YES;
-		[self.resizeGrabber.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:5].active = YES;
-		[self.resizeGrabber.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:5].active = YES;
+		[self.resizeGrabber.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-5].active = YES;
+		[self.resizeGrabber.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-5].active = YES;
 
 		UIPanGestureRecognizer *dragResize = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(resizeView:)];
 		[self.resizeGrabber addGestureRecognizer:dragResize];

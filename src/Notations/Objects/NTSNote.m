@@ -103,67 +103,79 @@
 
 	CGFloat x = self.view.frame.origin.x;
 	CGFloat y = self.view.frame.origin.y;
-	CGFloat width = self.view.frame.size.width;
-	CGFloat height = self.view.frame.size.height;
 
-	CGFloat minHeight = 200;
-	CGFloat minWidth = 200;
-	CGFloat maxHeight = self.view.superview.frame.size.height - 35;
-	CGFloat maxWidth = self.view.superview.frame.size.width - 35;
+	// CGFloat minHeight = 200;
+	// CGFloat minWidth = 200;
+	// CGFloat maxHeight = self.view.superview.frame.size.height - 35;
+	// CGFloat maxWidth = self.view.superview.frame.size.width - 35;
 
-	if (height + translatedPoint.y <= minHeight) {
-		height = minHeight - translatedPoint.y;
+	CGFloat width = fabs(self.view.frame.size.width + translatedPoint.x);
+	CGFloat height = fabs(self.view.frame.size.height + translatedPoint.y);
+	CGRect screen = [[UIScreen mainScreen] bounds];
+
+	if (self.view.frame.size.width + translatedPoint.x < 200) {
+		width = 200;
 	}
 
-	if (width + translatedPoint.x <= minWidth) {
-		width = minWidth - translatedPoint.x;
+	if (CGRectGetMaxX(self.view.frame) > screen.size.width) {
+		width -= fabs(screen.size.width - CGRectGetMaxX(self.view.frame));
 	}
 
-	if (height + translatedPoint.y >= maxHeight) {
-		height = maxHeight - translatedPoint.y;
+	if (self.view.frame.size.height + translatedPoint.y < 200) {
+		height = 200;
 	}
 
-	if (width + translatedPoint.x >= maxWidth) {
-		width = maxWidth - translatedPoint.x;
+	if (CGRectGetMaxY(self.view.frame) > screen.size.height) {
+		height -= fabs(screen.size.height - CGRectGetMaxY(self.view.frame));
 	}
 
-	self.view.frame = CGRectMake(x, y, width + translatedPoint.x, height + translatedPoint.y);
-	self.size = CGSizeMake(width + translatedPoint.x, height + translatedPoint.y);
+	self.view.frame = CGRectMake(x, y, width, height);
+	self.size = CGSizeMake(width, height);
 
 	[self saveNote];
 }
 
 - (void)dragView:(UIPanGestureRecognizer *)sender {
 	if (self.interactive) {
-		[self.view.superview bringSubviewToFront:sender.view];
-		CGPoint translatedPoint = [sender translationInView:sender.view.superview];
-		translatedPoint = CGPointMake(sender.view.center.x + translatedPoint.x, sender.view.center.y + translatedPoint.y);
+		CGPoint translatedPoint = CGPointMake(sender.view.center.x + [sender translationInView:sender.view.superview].x, sender.view.center.y + [sender translationInView:sender.view.superview].y);
 
+		[self.view.superview bringSubviewToFront:sender.view];
 		[sender.view setCenter:translatedPoint];
 		[sender setTranslation:CGPointZero inView:sender.view];
 
 		if (sender.state == UIGestureRecognizerStateEnded) {
-			CGFloat velocityX = (0.2 * [sender velocityInView:self.view.superview].x);
-			CGFloat velocityY = (0.2 * [sender velocityInView:self.view.superview].y);
+			BOOL corrected = NO;
+			CGFloat pointX = translatedPoint.x;
+			CGFloat pointY = translatedPoint.y;
+			CGRect screen = [[UIScreen mainScreen] bounds];
 
-			CGFloat finalX = translatedPoint.x + velocityX;
-			CGFloat finalY = translatedPoint.y + velocityY;
-
-			if (finalX < self.size.width / 2 + 10) {
-				finalX = self.size.width / 2 + 10;
-			} else if (finalX > self.view.superview.frame.size.width - self.size.width / 2 - 25) {
-				finalX = self.view.superview.frame.size.width - self.size.width / 2 - 25;
+			if (CGRectGetMinX(self.view.frame) < screen.origin.x) {
+				pointX = self.view.frame.size.width / 2;
+				corrected = YES;
 			}
 
-			if (finalY < self.size.height / 2 + 10) {
-				finalY = self.size.height / 2 + 10;
-			} else if (finalY > self.view.superview.frame.size.height - self.size.height / 2 - 25) {
-				finalY = self.view.superview.frame.size.height - self.size.height / 2 - 25;
+			if (CGRectGetMaxX(self.view.frame) > screen.size.width) {
+				pointX = screen.size.width - self.view.frame.size.width / 2;
+				corrected = YES;
 			}
 
-			[UIView animateWithDuration:ABS(velocityX) * 0.0002 + 0.2 animations:^{
-				[[sender view] setCenter:CGPointMake(finalX, finalY)];
-			}];
+			if (CGRectGetMinY(self.view.frame) < screen.origin.y) {
+				pointY = self.view.frame.size.height / 2;
+				corrected = YES;
+			}
+
+			if (CGRectGetMaxY(self.view.frame) > screen.size.height) {
+				pointY = screen.size.height - self.view.frame.size.height / 2;
+				corrected = YES;
+			}
+
+			if (corrected) {
+				[UIView animateWithDuration:0.25 animations:^{
+					[[sender view] setCenter:CGPointMake(pointX, pointY)];
+				}];
+			} else {
+				[[sender view] setCenter:CGPointMake(pointX, pointY)];
+			}
 		}
 	}
 

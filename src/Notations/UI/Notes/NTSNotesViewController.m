@@ -15,38 +15,6 @@
 	self.effectView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	[self.view addSubview:self.effectView];
 
-	// "Notes" title
-	self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(30, 40, 0, 0)];
-	self.titleLabel.alpha = 0;
-	self.titleLabel.text = @"Notes";
-	self.titleLabel.font = [UIFont boldSystemFontOfSize:42.0];
-	[self.titleLabel sizeToFit];
-	[self.view addSubview:self.titleLabel];
-
-	// // Create note button
-	// self.addButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	// self.addButton.alpha = 0;
-	// self.addButton.backgroundColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.5];
-	// self.addButton.layer.cornerRadius = 30;
-	// self.addButton.translatesAutoresizingMaskIntoConstraints = NO;
-	// [self.addButton addTarget:self action:@selector(openCreateNotePopup) forControlEvents:UIControlEventTouchUpInside];
-	// [self.view addSubview:self.addButton];
-
-	// [self.addButton.widthAnchor constraintEqualToConstant:60].active = YES;
-	// [self.addButton.heightAnchor constraintEqualToConstant:60].active = YES;
-	// [self.addButton.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:-30].active = YES;
-	// [self.addButton.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:-30].active = YES;
-
-	// + button text
-	// TODO: make this look good
-	self.addLabel = [[UILabel alloc] init];
-	self.addLabel.text = @"+";
-	self.addLabel.textColor = [UIColor whiteColor];
-    self.addLabel.textAlignment = NSTextAlignmentCenter;
-	self.addLabel.font = [UIFont boldSystemFontOfSize:32.0];
-	self.addLabel.frame = CGRectMake(0, -2.5, 60, 60);
-	[self.addButton addSubview:self.addLabel];
-
 	// Gestures
 	UILongPressGestureRecognizer *pressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:[NTSManager sharedInstance] action:@selector(createNote:)];
 	[self.view addGestureRecognizer:pressRecognizer];
@@ -70,8 +38,6 @@
 	overlayEffect.alpha = 0.088;
 
 	[UIView animateWithDuration:0.2 animations:^{
-		//self.titleLabel.alpha = 1;
-		//self.addButton.alpha = 1;
 		self.effectView.backgroundEffects = @[zoomEffect, overlayEffect, blurEffect];
 		self.effectView.backgroundColor = [UIColor colorWithRed:0.086 green:0.082 blue:0.1647 alpha:0.21];
 	} completion:nil];
@@ -87,8 +53,6 @@
 	[self.effectView.layer addAnimation:colorAnimation forKey:@"backgroundColor"];
 
 	[UIView animateWithDuration:0.2 animations:^{
-		//self.titleLabel.alpha = 0;
-		//self.addButton.alpha = 0;
 		self.effectView.backgroundEffects = nil;
 	} completion:nil];
 }

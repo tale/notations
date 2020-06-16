@@ -196,10 +196,10 @@ static void NTSPreferencesUpdate() {
 	gesture = [([preferences objectForKey:@"gesture"] ?: @(0)) integerValue];
 	[NTSManager sharedInstance].colorStyle = [([preferences objectForKey:@"style"] ?: @(0)) integerValue];
 	[NTSManager sharedInstance].textAlignment = [([preferences objectForKey:@"alignment"] ?: @(1)) integerValue];
-	[NTSManager sharedInstance].useCustomTextSize = [([preferences objectForKey:@"useCustomTextSize"] ?: @(NO)) boolValue];
+	[NTSManager sharedInstance].isCustomText = [([preferences objectForKey:@"isCustomText"] ?: @(NO)) boolValue];
 
-	if ([NTSManager sharedInstance].useCustomTextSize) {
-		[NTSManager sharedInstance].textSize = [([preferences objectForKey:@"customTextSize"] ?: @(14)) integerValue];
+	if ([NTSManager sharedInstance].isCustomText) {
+		[NTSManager sharedInstance].textSize = [([preferences objectForKey:@"customText"] ?: @([UIFont systemFontSize])) integerValue];
 	} else {
 		[NTSManager sharedInstance].textSize = [UIFont systemFontSize];
 	}

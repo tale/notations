@@ -11,7 +11,7 @@
 
 	dispatch_once(&onceToken, ^{
 		instance = [NTSManager alloc];
-		instance.notes = nil;
+		instance.notes = [NSMutableArray new];
 	});
 
 	return instance;
