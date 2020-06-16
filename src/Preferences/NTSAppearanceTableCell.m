@@ -13,6 +13,9 @@ NSString *postNotification;
 NSString *defaults;
 NSString *key;
 
+UIImage *unchecked;
+UIImage *checked;
+
 @implementation AppearanceTypeStackView
 
 - (instancetype)initWithType:(int)type forController:(NTSAppearanceCell *)controller {
@@ -28,6 +31,11 @@ NSString *key;
 		[self.feedbackGenerator prepare];
 
 		self.type = type;
+	// 	CGRect bounds = [self bounds];
+    // [[UIColor blackColor] set];
+    // CGContextRef context = UIGraphicsGetCurrentContext();
+    // CGContextClipToMask(context, bounds, [myImage CGImage]);
+    // CGContextFillRect(context, bounds);
 
 		if (self.type == 0) {
 			self.iconImage = [UIImage imageWithContentsOfFile:leftOptionImage];
@@ -53,17 +61,23 @@ NSString *key;
 			preferences = [[NSMutableDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", @"me.renai.notations"]];
 		}
 
+		checked = [[UIImage kitImageNamed:@"UITintedCircularButtonCheckmark.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+
+		unchecked = [[UIImage kitImageNamed:@"UIRemoveControlMultiNotCheckedImage.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+
 		NSNumber *appearanceStyle = [NSNumber numberWithInt:[([preferences objectForKey:key] ?: @(0)) integerValue]];
 		if ([appearanceStyle isEqualToNumber:[NSNumber numberWithInt:self.type]]) {
-	  		[self.checkmarkButton setImage:[[UIImage kitImageNamed:@"UITintedCircularButtonCheckmark.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+	  		[self.checkmarkButton setImage:checked forState:UIControlStateNormal];
+			self.checkmarkButton.tintColor = [UIColor systemBlueColor];
 		} else {
-	  		[self.checkmarkButton setImage:[[UIImage kitImageNamed:@"UIRemoveControlMultiNotCheckedImage.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+	  		[self.checkmarkButton setImage:unchecked forState:UIControlStateNormal];
+			self.checkmarkButton.tintColor = [UIColor systemGrayColor];
 		}
 
 		self.iconView = [[UIImageView alloc] initWithImage:self.iconImage];
-		self.iconView.contentMode = UIViewContentModeScaleAspectFit;
-		[self.iconView.heightAnchor constraintEqualToConstant:85].active = true;
-		[self.iconView.widthAnchor constraintEqualToConstant:55].active = true;
+		// self.iconView.contentMode = UIViewContentModeScaleAspectFit;
+		[self.iconView.heightAnchor constraintEqualToConstant:120].active = true;
+		[self.iconView.widthAnchor constraintEqualToConstant:60].active = true;
 
 		[self.captionLabel setFont:[UIFont preferredFontForTextStyle:UIFontTextStyleBody]];
 		[self.captionLabel.heightAnchor constraintEqualToConstant:20].active = true;
@@ -76,12 +90,12 @@ NSString *key;
 
 		[self.checkmarkButton.heightAnchor constraintEqualToConstant:22].active = true;
 		[self.checkmarkButton.widthAnchor constraintEqualToConstant:22].active = true;
-		[self.checkmarkButton addTarget:self action:@selector(buttonTapped) forControlEvents:UIControlEventTouchUpInside];
+		[self.checkmarkButton addTarget:self action:@selector(buttonTapped:) forControlEvents:UIControlEventTouchUpInside];
 
 		self.contentStackview = [[UIStackView alloc] init];
 		self.contentStackview.axis = UILayoutConstraintAxisVertical;
 		self.contentStackview.alignment = UIStackViewAlignmentCenter;
-		self.contentStackview.spacing = 5;
+		self.contentStackview.spacing = 8;
 
 		[self.contentStackview addArrangedSubview:self.iconView];
 		[self.contentStackview addArrangedSubview:self.captionLabel];
@@ -90,7 +104,7 @@ NSString *key;
 		self.contentStackview.translatesAutoresizingMaskIntoConstraints = false;
 		self.translatesAutoresizingMaskIntoConstraints = false;
 
-		self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(buttonTapped)];
+		self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(buttonTapped:)];
 		self.tapGestureRecognizer.numberOfTapsRequired = 1;
 
 		[self addSubview:self.contentStackview];
@@ -104,11 +118,20 @@ NSString *key;
 	return self;
 }
 
-- (void)buttonTapped {
+- (void)buttonTapped:(UILongPressGestureRecognizer *)sender {
+	if (sender.state == UIGestureRecognizerStateBegan) {
+		[UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+			self.alpha = 0.5;
+		} completion:^(BOOL finished) {}];
+	} else if (sender.state == UIGestureRecognizerStateEnded){
+		[UIView animateWithDuration:0.1 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+			self.alpha = 1.0;
+		} completion:^(BOOL finished) {}];
+	}
+
 	[self.feedbackGenerator impactOccurred];
 
 	CFPreferencesSetValue((CFStringRef) key, CFBridgingRetain([NSNumber numberWithInt:self.type]), (CFStringRef) defaults, kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
-
 
   	CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), (CFStringRef) postNotification, NULL, NULL, YES);
 
@@ -151,7 +174,7 @@ NSString *key;
 
 		[self.containerStackView.centerXAnchor constraintEqualToAnchor:self.centerXAnchor].active = true;
 		[self.containerStackView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor].active = true;
-		[self.heightAnchor constraintEqualToConstant:160].active = true;
+		[self.heightAnchor constraintEqualToConstant:179].active = true;
 	}
 
   return self;
@@ -190,19 +213,22 @@ NSString *key;
   	}
 
 	[UIView transitionWithView:notSelect1.checkmarkButton duration:0.2f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-		[notSelect1.checkmarkButton setImage:[[UIImage kitImageNamed:@"UIRemoveControlMultiNotCheckedImage.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate]forState:UIControlStateNormal];
+		[notSelect1.checkmarkButton setImage:unchecked forState:UIControlStateNormal];
+		notSelect1.checkmarkButton.tintColor = [UIColor systemGrayColor];
 	} completion:^(BOOL finished) {
 		finished = YES;
 	}];
 
 	[UIView transitionWithView:notSelect2.checkmarkButton duration:0.2f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-		[notSelect2.checkmarkButton setImage:[[UIImage kitImageNamed:@"UIRemoveControlMultiNotCheckedImage.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+		[notSelect2.checkmarkButton setImage:unchecked forState:UIControlStateNormal];
+		notSelect2.checkmarkButton.tintColor = [UIColor systemGrayColor];
 	} completion:^(BOOL finished) {
 		finished = YES;
 	}];
 
   	[UIView transitionWithView:toSelect.checkmarkButton duration:0.2f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-		[toSelect.checkmarkButton setImage:[[UIImage kitImageNamed:@"UITintedCircularButtonCheckmark.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
+		[toSelect.checkmarkButton setImage:checked forState:UIControlStateNormal];
+		toSelect.checkmarkButton.tintColor = [UIColor systemBlueColor];
 	} completion:^(BOOL finished) {
 		finished = YES;
 	}];
