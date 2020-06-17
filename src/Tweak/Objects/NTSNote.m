@@ -220,9 +220,6 @@
 	CGRect screen = [[UIScreen mainScreen] bounds];
 	CGFloat boardHeight = fabs(screen.size.height - [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height);
 
-	// self.cachedPoint = CGPointMake(self.center.x, self.center.y);
-	// self.cachedSize = CGSizeMake(self.size.width, self.size.height);
-
 	if ([self.view.textView isFirstResponder] && CGRectGetMaxY(self.view.frame) > boardHeight) {
 		if (self.view.frame.size.height - 30 > boardHeight) {
 			[UIView animateWithDuration:0.25 animations:^{

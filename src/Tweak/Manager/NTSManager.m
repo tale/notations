@@ -47,7 +47,8 @@
 	NSData *notesArrayData = [NSData dataWithContentsOfFile:@"/var/mobile/Library/Application Support/me.renai.notations.data.plist"];
 
 	if (notesArrayData) {
-		NSArray *savedNotesArray = [NSKeyedUnarchiver unarchiveObjectWithData:notesArrayData];
+		NSError *error;
+		NSArray *savedNotesArray = [NSKeyedUnarchiver unarchivedObjectOfClass:[NTSNote class] fromData:notesArrayData error:&error];
 		if (savedNotesArray) {
 			self.notes = [[NSMutableArray alloc] initWithArray:savedNotesArray];
 		} else {
