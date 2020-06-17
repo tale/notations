@@ -10,6 +10,7 @@
 @property (nonatomic) BOOL windowVisible;
 @property (nonatomic) BOOL enabled;
 @property (nonatomic) BOOL isCustomText;
+@property (nonatomic) NSInteger gesture;
 @property (nonatomic) NSInteger textSize;
 @property (nonatomic) NSInteger textAlignment;
 @property (nonatomic) NSInteger colorStyle;

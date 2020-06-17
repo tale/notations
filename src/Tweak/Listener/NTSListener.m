@@ -24,7 +24,10 @@
 }
 
 - (void)activator:(LAActivator *)activator receiveEvent:(LAEvent *)event {
-	[[NTSManager sharedInstance] toggleNotesShown];
+	if ([NTSManager sharedInstance].gesture == 4) {
+		[[NTSManager sharedInstance] toggleNotesShown];
+	}
+
 	[event setHandled:YES];
 }
 

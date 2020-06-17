@@ -7,8 +7,6 @@
 static NSString *bundleIdentifier = @"me.renai.notations";
 
 static NSMutableDictionary *preferences;
-static NSInteger gesture;
-
 static NSMutableArray *viewUpdateQueue;
 
 // Hide notes on power button press
@@ -73,11 +71,11 @@ static NSMutableArray *viewUpdateQueue;
 %new
 - (void)updateNotations {
 	if (self.notationsGesture) [self.view removeGestureRecognizer:self.notationsGesture];
-		if (gesture == 2) {
+		if ([NTSManager sharedInstance].gesture == 2) {
 			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleNotesShown)];
 			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 2;
 			[self.view addGestureRecognizer:self.notationsGesture];
-		} else if (gesture == 3) {
+		} else if ([NTSManager sharedInstance].gesture == 3) {
 			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleNotesShown)];
 			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 3;
 			[self.view addGestureRecognizer:self.notationsGesture];
@@ -107,11 +105,11 @@ static NSMutableArray *viewUpdateQueue;
 %new
 - (void)updateNotations {
 	if (self.notationsGesture) [self removeGestureRecognizer:self.notationsGesture];
-		if (gesture == 0) {
+		if ([NTSManager sharedInstance].gesture == 0) {
 			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleNotesShown)];
 			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 2;
 			[self addGestureRecognizer:self.notationsGesture];
-		} else if (gesture == 1) {
+		} else if ([NTSManager sharedInstance].gesture == 1) {
 			self.notationsGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressStatusBar:)];
 			[self addGestureRecognizer:self.notationsGesture];
 		}
@@ -148,11 +146,11 @@ static NSMutableArray *viewUpdateQueue;
 - (void)updateNotations {
 	UIView *statusBar = [self valueForKey:@"_statusBar"];
 	if (self.notationsGesture) [statusBar removeGestureRecognizer:self.notationsGesture];
-		if (gesture == 0) {
+		if ([NTSManager sharedInstance].gesture == 0) {
 			self.notationsGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleNotesShown)];
 			((UITapGestureRecognizer *)self.notationsGesture).numberOfTapsRequired = 2;
 			[statusBar addGestureRecognizer:self.notationsGesture];
-		} else if (gesture == 1) {
+		} else if ([NTSManager sharedInstance].gesture == 1) {
 			self.notationsGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressStatusBar:)];
 			[statusBar addGestureRecognizer:self.notationsGesture];
 		}
@@ -193,7 +191,7 @@ static void NTSPreferencesUpdate() {
 	}
 
 	[NTSManager sharedInstance].enabled = [([preferences objectForKey:@"enabled"] ?: @(YES)) boolValue];
-	gesture = [([preferences objectForKey:@"gesture"] ?: @(0)) integerValue];
+	[NTSManager sharedInstance].gesture = [([preferences objectForKey:@"gesture"] ?: @(0)) integerValue];
 	[NTSManager sharedInstance].colorStyle = [([preferences objectForKey:@"style"] ?: @(0)) integerValue];
 	[NTSManager sharedInstance].textAlignment = [([preferences objectForKey:@"alignment"] ?: @(1)) integerValue];
 	[NTSManager sharedInstance].isCustomText = [([preferences objectForKey:@"isCustomText"] ?: @(NO)) boolValue];
