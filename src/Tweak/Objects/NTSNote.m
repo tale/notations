@@ -32,6 +32,10 @@
 		self.view.translatesAutoresizingMaskIntoConstraints = YES;
 		self.view.center = self.center;
 
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
+
+
 		[self.view.lockButton addTarget:self action:@selector(disableActions) forControlEvents:UIControlEventTouchUpInside];
 		[self.view.deleteButton addTarget:self action:@selector(deleteNote) forControlEvents:UIControlEventTouchUpInside];
 
@@ -61,6 +65,27 @@
 			self.view.textView.text = self.text;
 		}
 
+		CGFloat pointX = self.view.center.x;
+		CGFloat pointY = self.view.center.y;
+		CGRect screen = [[UIScreen mainScreen] bounds];
+
+		if (CGRectGetMinX(self.view.frame) < screen.origin.x) {
+			pointX = self.view.frame.size.width / 2;
+		}
+
+		if (CGRectGetMaxX(self.view.frame) > screen.size.width) {
+			pointX = screen.size.width - self.view.frame.size.width / 2;
+		}
+
+		if (CGRectGetMinY(self.view.frame) < screen.origin.y) {
+			pointY = self.view.frame.size.height / 2;
+		}
+
+		if (CGRectGetMaxY(self.view.frame) > screen.size.height) {
+			pointY = screen.size.height - self.view.frame.size.height / 2;
+		}
+
+		[self.view setCenter:CGPointMake(pointX, pointY)];
 		[self saveNote];
 	}
 }
@@ -103,11 +128,6 @@
 
 	CGFloat x = self.view.frame.origin.x;
 	CGFloat y = self.view.frame.origin.y;
-
-	// CGFloat minHeight = 200;
-	// CGFloat minWidth = 200;
-	// CGFloat maxHeight = self.view.superview.frame.size.height - 35;
-	// CGFloat maxWidth = self.view.superview.frame.size.width - 35;
 
 	CGFloat width = fabs(self.view.frame.size.width + translatedPoint.x);
 	CGFloat height = fabs(self.view.frame.size.height + translatedPoint.y);
@@ -194,6 +214,47 @@
 	NSData *data = [NSKeyedArchiver archivedDataWithRootObject:[NTSManager sharedInstance].notes requiringSecureCoding:NO error:&error];
 
 	[data writeToFile:@"/var/mobile/Library/Application Support/me.renai.notations.data.plist" atomically:NO];
+}
+
+- (void)keyboardDidShow:(NSNotification *)notification {
+	CGRect screen = [[UIScreen mainScreen] bounds];
+	CGFloat boardHeight = fabs(screen.size.height - [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height);
+
+	// self.cachedPoint = CGPointMake(self.center.x, self.center.y);
+	// self.cachedSize = CGSizeMake(self.size.width, self.size.height);
+
+	if ([self.view.textView isFirstResponder] && CGRectGetMaxY(self.view.frame) > boardHeight) {
+		if (self.view.frame.size.height - 30 > boardHeight) {
+			[UIView animateWithDuration:0.25 animations:^{
+				self.view.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.width, boardHeight - 30);
+			}];
+		}
+
+		CGFloat translationX;
+		if (self.view.center.x < screen.size.width / 2) {
+			 translationX = fabs(self.view.center.x - screen.size.width / 2);
+		} else if (self.view.center.x > screen.size.width / 2) {
+			 translationX = -fabs(self.view.center.x - screen.size.width / 2);
+		} else {
+			translationX = self.view.center.x;
+		}
+
+		CGFloat translationY = -fabs(self.view.center.y - (boardHeight - self.view.frame.size.height / 2 - 30));
+
+		// [self saveNote];
+		[UIView animateWithDuration:0.25 animations:^{
+			self.view.transform = CGAffineTransformMakeTranslation(translationX, translationY);
+		}];
+	}
+}
+
+- (void)keyboardDidHide:(NSNotification *)notification {
+	[UIView animateWithDuration:0.25 animations:^{
+		self.view.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.size.width, self.size.height);
+		self.view.transform = CGAffineTransformIdentity;
+	}];
+
+	[self saveNote];
 }
 
 @end

@@ -17,5 +17,7 @@
 - (void)willShowView;
 - (void)willHideView;
 - (void)didShowView;
+- (void)keyboardDidShow:(NSNotification *)notification;
+- (void)keyboardDidHide:(NSNotification *)notification;
 
 @end
