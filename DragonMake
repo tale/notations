@@ -1,0 +1,34 @@
+---
+# This represents the overall project name.
+name: Notations
+icmd: sbreload
+
+all:
+    targetvers: 13.0
+    archs:
+        - arm64
+        - arm64e
+    include:
+        - ../../Headers/
+# This represents a Tweak .dylib and .plist.
+Notations:
+    dir: src/Tweak
+    type: tweak
+    # A list of logos files. See variables section for more info.
+    logos_files:
+        - '*.x'
+    objc_files:
+        - '**/*.m'
+    # A list, excluding logos files, of files to compile. See variables section for more info.
+    # Min ios
+    # List of archs we want to build for
+# Now for prefs!
+NotationsPrefs:
+    # Specify the directory, since it's a subproject
+    dir: src/Preferences
+    # Tell dragon that it's a bundle
+    type: prefs
+    # You can specify files from anywhere in your tweak, or use directory specific wildcards
+    objc_files:
+        - NTSRootListController.m
+        - NTSAppearanceTableCell.m

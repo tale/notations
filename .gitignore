@@ -2,6 +2,10 @@
 .theos/
 packages/
 
+# Dragon Ignore Files
+.dragon/
+build.ninja
+
 # Other
 .DS_Store
 .vscode/

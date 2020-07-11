@@ -1,6 +1,6 @@
 #import <SpringBoard/SBHomeScreenViewController.h>
 #import <SpringBoard/SBMainDisplaySceneLayoutStatusBarView.h>
-#import <UIKit/UIStatusBarWindow.h>
+#import "UIKit/UIStatusBarWindow.h"
 
 #define SYSTEM_VERSION(version) ([[[UIDevice currentDevice] systemVersion] compare:version options:NSNumericSearch] != NSOrderedAscending)
 
