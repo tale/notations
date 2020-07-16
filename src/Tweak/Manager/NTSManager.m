@@ -29,6 +29,9 @@
 		self.notesView = self.window.rootViewController.view;
 		self.notesView.userInteractionEnabled = YES;
 	}
+
+	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:[UIDevice currentDevice]];
 }
 
 - (void)removeNote:(NTSNote *)note {
@@ -130,6 +133,41 @@
 	}
 	self.window.hidden = YES;
 	self.windowVisible = NO;
+}
+
+- (void) orientationChanged:(NSNotification *)sender {
+	UIDevice * device = sender.object;
+	switch (device.orientation) {
+        case UIInterfaceOrientationLandscapeLeft:
+			for (NTSNote *note in self.notes) {
+				[UIView animateWithDuration:0.25 animations:^{
+					note.view.transform = CGAffineTransformMakeRotation(-90 * M_PI / 180.0);
+				} completion:nil];	
+			}
+			break;
+        case UIInterfaceOrientationLandscapeRight:
+            for (NTSNote *note in self.notes) {
+				[UIView animateWithDuration:0.25 animations:^{
+					note.view.transform = CGAffineTransformMakeRotation(90 * M_PI / 180.0);
+				} completion:nil];	
+			}
+			break;
+        case UIInterfaceOrientationPortraitUpsideDown:
+            for (NTSNote *note in self.notes) {
+				[UIView animateWithDuration:0.25 animations:^{
+					note.view.transform = CGAffineTransformMakeRotation(180 * M_PI / 180.0);
+				} completion:nil];	
+			}
+			break;
+        case UIInterfaceOrientationPortrait:
+        default: 
+			for (NTSNote *note in self.notes) {
+				[UIView animateWithDuration:0.25 animations:^{
+					note.view.transform = CGAffineTransformMakeRotation(0 * M_PI / 180.0);
+				} completion:nil];	
+			}
+			break;
+    }
 }
 
 @end
