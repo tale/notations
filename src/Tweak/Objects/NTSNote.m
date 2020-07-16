@@ -125,6 +125,7 @@
 - (void)resizeView:(UIPanGestureRecognizer *)sender {
 	CGPoint translatedPoint = [sender translationInView:sender.view];
 	[sender setTranslation:CGPointZero inView:sender.view];
+	[self.view.superview bringSubviewToFront:sender.view];
 
 	CGFloat x = self.view.frame.origin.x;
 	CGFloat y = self.view.frame.origin.y;
@@ -213,7 +214,7 @@
 	NSError *error;
 	NSData *data = [NSKeyedArchiver archivedDataWithRootObject:[NTSManager sharedInstance].notes requiringSecureCoding:NO error:&error];
 
-	[data writeToFile:@"/var/mobile/Library/Application Support/me.renai.notations.data.plist" atomically:NO];
+	[data writeToFile:@"/var/mobile/Documents/NotationsData.plist" atomically:NO];
 }
 
 - (void)keyboardDidShow:(NSNotification *)notification {
@@ -223,6 +224,7 @@
 	if ([self.view.textView isFirstResponder] && CGRectGetMaxY(self.view.frame) > boardHeight) {
 		if (self.view.frame.size.height - 30 > boardHeight) {
 			[UIView animateWithDuration:0.25 animations:^{
+				[self.view.superview bringSubviewToFront:self.view];
 				self.view.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.width, boardHeight - 30);
 			}];
 		}

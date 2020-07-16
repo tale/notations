@@ -41,17 +41,18 @@
 	NSError *error;
 	NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.notes requiringSecureCoding:NO error:&error];
 
-	[data writeToFile:@"/var/mobile/Library/Application Support/me.renai.notations.data.plist" atomically:NO];
+	[data writeToFile:@"/var/mobile/Documents/NotationsData.plist" atomically:NO];
 
 	[self updateNotes];
 }
 
 - (void)loadNotes {
-	NSData *notesArrayData = [NSData dataWithContentsOfFile:@"/var/mobile/Library/Application Support/me.renai.notations.data.plist"];
+	NSData *notesArrayData = [NSData dataWithContentsOfFile:@"/var/mobile/Documents/NotationsData.plist"];
 
 	if (notesArrayData) {
-		NSError *error;
-		NSArray *savedNotesArray = [NSKeyedUnarchiver unarchivedObjectOfClass:[NTSNote class] fromData:notesArrayData error:&error];
+		// NSError *error;
+		// NSArray *savedNotesArray = [NSKeyedUnarchiver unarchivedObjectOfClass:[NTSNote class] fromData:notesArrayData error:&error];
+		NSArray *savedNotesArray = [NSKeyedUnarchiver unarchiveObjectWithData:notesArrayData];
 		if (savedNotesArray) {
 			self.notes = [[NSMutableArray alloc] initWithArray:savedNotesArray];
 		} else {
@@ -97,7 +98,7 @@
 			NSError *error;
 			NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.notes requiringSecureCoding:NO error:&error];
 
-			[data writeToFile:@"/var/mobile/Library/Application Support/me.renai.notations.data.plist" atomically:NO];
+			[data writeToFile:@"/var/mobile/Documents/NotationsData.plist" atomically:NO];
 		}
 	}
 }
