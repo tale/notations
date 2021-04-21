@@ -31,11 +31,6 @@ UIImage *checked;
 		[self.feedbackGenerator prepare];
 
 		self.type = type;
-	// 	CGRect bounds = [self bounds];
-    // [[UIColor blackColor] set];
-    // CGContextRef context = UIGraphicsGetCurrentContext();
-    // CGContextClipToMask(context, bounds, [myImage CGImage]);
-    // CGContextFillRect(context, bounds);
 
 		if (self.type == 0) {
 			self.iconImage = [UIImage imageWithContentsOfFile:leftOptionImage];
@@ -49,16 +44,16 @@ UIImage *checked;
 		}
 
 		NSMutableDictionary *preferences;
-		CFArrayRef preferencesKeyList = CFPreferencesCopyKeyList(CFSTR("me.renai.notations"), kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+		CFArrayRef preferencesKeyList = CFPreferencesCopyKeyList(CFSTR("me.tale.notations-legacy"), kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
 		if (preferencesKeyList) {
-			preferences = (NSMutableDictionary *)CFBridgingRelease(CFPreferencesCopyMultiple(preferencesKeyList, CFSTR("me.renai.notations"), kCFPreferencesCurrentUser, kCFPreferencesAnyHost));
+			preferences = (NSMutableDictionary *)CFBridgingRelease(CFPreferencesCopyMultiple(preferencesKeyList, CFSTR("me.tale.notations-legacy"), kCFPreferencesCurrentUser, kCFPreferencesAnyHost));
 			CFRelease(preferencesKeyList);
 		} else {
 			preferences = nil;
 		}
 
 		if (preferences == nil) {
-			preferences = [[NSMutableDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", @"me.renai.notations"]];
+			preferences = [[NSMutableDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", @"me.tale.notations-legacy"]];
 		}
 
 		checked = [[UIImage kitImageNamed:@"UITintedCircularButtonCheckmark.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];

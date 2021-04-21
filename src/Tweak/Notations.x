@@ -4,7 +4,7 @@
 #import "UI/Window/NTSWindow.h"
 #import "Listener/NTSListener.h"
 
-static NSString *bundleIdentifier = @"me.renai.notations";
+static NSString *bundleIdentifier = @"me.tale.notations-legacy";
 
 static NSMutableDictionary *preferences;
 static NSMutableArray *viewUpdateQueue;
@@ -84,7 +84,7 @@ static NSMutableArray *viewUpdateQueue;
 
 %new
 - (void)toggleNotesShown {
-	CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), CFSTR("me.renai.notations/toggle"), NULL, NULL, true);
+	CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), CFSTR("me.tale.notations-legacy/toggle"), NULL, NULL, true);
 }
 
 %end
@@ -124,7 +124,7 @@ static NSMutableArray *viewUpdateQueue;
 
 %new
 - (void)toggleNotesShown {
-	CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), CFSTR("me.renai.notations/toggle"), NULL, NULL, true);
+	CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), CFSTR("me.tale.notations-legacy/toggle"), NULL, NULL, true);
 }
 
 %end
@@ -165,7 +165,7 @@ static NSMutableArray *viewUpdateQueue;
 
 %new
 - (void)toggleNotesShown {
-	CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), CFSTR("me.renai.notations/toggle"), NULL, NULL, true);
+	CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), CFSTR("me.tale.notations-legacy/toggle"), NULL, NULL, true);
 }
 
 %end
@@ -224,15 +224,15 @@ static void NTSPreferencesUpdate() {
 
 			NTSPreferencesUpdate();
 
-			CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback) NTSPreferencesUpdate, CFSTR("me.renai.notations/reload"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+			CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback) NTSPreferencesUpdate, CFSTR("me.tale.notations-legacy/reload"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 
-			CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, (CFNotificationCallback) NTSToggleNotes, CFSTR("me.renai.notations/toggle"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+			CFNotificationCenterAddObserver(CFNotificationCenterGetDistributedCenter(), NULL, (CFNotificationCallback) NTSToggleNotes, CFSTR("me.tale.notations-legacy/toggle"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 
 			if (isSpringBoard) {
 				dlopen("/usr/lib/libactivator.dylib", RTLD_LAZY);
 				id la = %c(LAActivator);
 				if (la) {
-					[[la sharedInstance] registerListener:[NTSListener new] forName:@"me.renai.notations/toggle"];
+					[[la sharedInstance] registerListener:[NTSListener new] forName:@"me.tale.notations-legacy/toggle"];
 				}
 			}
 		}

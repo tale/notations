@@ -1,13 +1,13 @@
-Package: me.renai.notations
+Package: me.tale.notations-legacy
 Name: Notations
 Depends: mobilesubstrate, preferenceloader, firmware (>=11.0)
-Version: 1.0.0
+Version: 1.0.1
 Architecture: iphoneos-arm
 Description: The "Sticky Notes" experience for iOS!
-Maintainer: Renaitare <support@renai.me>
-Author: Renaitare <support@renai.me>
+Maintainer: Aarnav Tale <aarnav@tale.me>
+Author: Aarnav Tale <aarnav@tale.me>
 Section: Tweaks
-Depiction: https://repo.renai.me/package/me.renai.notations
-SileoDepiction: https://repo.renai.me/package/me.renai.notations.json
-ModernDepiction: https://repo.renai.me/package/me.renai.notations.json
-Icon: https://repo.renai.me/assets/me.renai.notations/images/icon.png
+Conflicts: me.tale.notations-legacy
+Icon: https://apt.tale.me/api/me.tale.notations.png
+Depiction: https://apt.tale.me/me.tale.notations
+SileoDepiction: https://apt.tale.me/me.tale.notations.json

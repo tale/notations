@@ -28,9 +28,9 @@
 				<key>rightOptionImage</key>
 				<string>/Library/PreferenceBundles/NotationsPrefs.bundle/styles/dark.png</string>
 				<key>defaults</key>
-				<string>me.renai.notations</string>
+				<string>me.tale.notations-legacy</string>
 				<key>PostNotification</key>
-				<string>me.renai.notations/reload</string>
+				<string>me.tale.notations-legacy/reload</string>
 				<key>key</key>
 				<string>style</string>
 				<key>height</key>
@@ -68,9 +68,9 @@
 				<key>key</key>
 				<string>gesture</string>
 				<key>defaults</key>
-				<string>me.renai.notations</string>
+				<string>me.tale.notations-legacy</string>
 				<key>PostNotification</key>
-				<string>me.renai.notations/reload</string>
+				<string>me.tale.notations-legacy/reload</string>
 			</dict>
 			<dict>
 				<key>cell</key>
@@ -82,9 +82,9 @@
 				<key>key</key>
 				<string>isCustomText</string>
 				<key>defaults</key>
-				<string>me.renai.notations</string>
+				<string>me.tale.notations-legacy</string>
 				<key>PostNotification</key>
-				<string>me.renai.notations/reload</string>
+				<string>me.tale.notations-legacy/reload</string>
 			</dict>
 			<dict>
 				<key>cell</key>
@@ -106,9 +106,9 @@
 				<key>key</key>
 				<string>customText</string>
 				<key>defaults</key>
-				<string>me.renai.notations</string>
+				<string>me.tale.notations-legacy</string>
 				<key>PostNotification</key>
-				<string>me.renai.notations/reload</string>
+				<string>me.tale.notations-legacy/reload</string>
 			</dict>
 			<dict>
 				<key>cell</key>
@@ -138,9 +138,9 @@
 				<key>key</key>
 				<string>alignment</string>
 				<key>defaults</key>
-				<string>me.renai.notations</string>
+				<string>me.tale.notations-legacy</string>
 				<key>PostNotification</key>
-				<string>me.renai.notations/reload</string>
+				<string>me.tale.notations-legacy/reload</string>
 			</dict>
 			<dict>
 				<key>cell</key>

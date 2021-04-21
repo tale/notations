@@ -8,16 +8,16 @@
 
 	if (self) {
 		NSMutableDictionary *preferences;
-		CFArrayRef preferencesKeyList = CFPreferencesCopyKeyList(CFSTR("me.renai.notations"), kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+		CFArrayRef preferencesKeyList = CFPreferencesCopyKeyList(CFSTR("me.tale.notations-legacy"), kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
 		if (preferencesKeyList) {
-			preferences = (NSMutableDictionary *)CFBridgingRelease(CFPreferencesCopyMultiple(preferencesKeyList, CFSTR("me.renai.notations"), kCFPreferencesCurrentUser, kCFPreferencesAnyHost));
+			preferences = (NSMutableDictionary *)CFBridgingRelease(CFPreferencesCopyMultiple(preferencesKeyList, CFSTR("me.tale.notations-legacy"), kCFPreferencesCurrentUser, kCFPreferencesAnyHost));
 			CFRelease(preferencesKeyList);
 		} else {
 			preferences = nil;
 		}
 
 		if (preferences == nil) {
-			preferences = [[NSMutableDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", @"me.renai.notations"]];
+			preferences = [[NSMutableDictionary alloc] initWithContentsOfFile:[NSString stringWithFormat:@"/var/mobile/Library/Preferences/%@.plist", @"me.tale.notations-legacy"]];
 		}
 
 		UISwitch *toggleSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(0, 0, 50, 30)];
@@ -32,9 +32,9 @@
 - (void)updateSwitch:(UISwitch *)sender {
     UISwitch *toggleSwitch = (UISwitch *)sender;
 
-	CFPreferencesSetValue(CFSTR("enabled"), CFBridgingRetain([NSNumber numberWithBool:[toggleSwitch isOn]]), CFSTR("me.renai.notations"), kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
+	CFPreferencesSetValue(CFSTR("enabled"), CFBridgingRetain([NSNumber numberWithBool:[toggleSwitch isOn]]), CFSTR("me.tale.notations-legacy"), kCFPreferencesCurrentUser, kCFPreferencesAnyHost);
 
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("me.renai.notations/reload"), NULL, NULL, YES);
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR("me.tale.notations-legacy/reload"), NULL, NULL, YES);
 }
 
 - (NSMutableArray *)specifiers {

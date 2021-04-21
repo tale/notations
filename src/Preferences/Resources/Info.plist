@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>NotationsPrefs</string>
 	<key>CFBundleIdentifier</key>
-	<string>me.renai.notations.preferences</string>
+	<string>me.tale.notations-legacy.preferences</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
