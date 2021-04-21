@@ -7,7 +7,7 @@ Description: The "Sticky Notes" experience for iOS!
 Maintainer: Aarnav Tale <aarnav@tale.me>
 Author: Aarnav Tale <aarnav@tale.me>
 Section: Tweaks
-Conflicts: me.tale.notations-legacy
-Icon: https://apt.tale.me/api/me.tale.notations.png
-Depiction: https://apt.tale.me/me.tale.notations
-SileoDepiction: https://apt.tale.me/me.tale.notations.json
+Conflicts: me.renai.notations
+Icon: https://apt.tale.me/api/me.tale.notations-legacy.png
+Depiction: https://apt.tale.me/me.tale.notations-legacy
+SileoDepiction: https://apt.tale.me/me.tale.notations-legacy.json
